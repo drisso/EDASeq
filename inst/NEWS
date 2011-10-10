@@ -1,0 +1,31 @@
+Changes in Version 0.99.1
+------------------------
+* The read-level EDA is now based on the classes BamFileList and FastqFileList of Rsamtools. The class ShortReadSet doesn't exist anymore.
+* Changed vignette
+
+Changes in Version 0.99.0
+------------------------
+* Version number changed for submission to Bioconductor
+
+Changes in Version 0.0.6
+------------------------
+* Fixed a bug in withinLaneNormalization to work with unnamed matrices
+* Fixed a bug in biasPlot to work with a single lane experiment
+* Added methods MDPlot and biasBoxplot
+* Changed the vignette and added an help page for newSeqExpression function
+
+Changes in Version 0.0.5
+------------------------
+* Modified coerce from SeqExpressionSet to CountDataSet to treat the two class comparison in a separate way
+
+Changes in Version 0.0.4
+------------------------
+* Added Vignette
+* Adjusted xlab in the boxplot method for signature FastqQuality
+* Changed getOffset and setOffset<- methods in offst and offst<- for compatibility with edgeR
+
+Changes in Version 0.0.3
+------------------------
+* Added CITATION file
+* Added Help pages
+* Added data and extdata for the examples
