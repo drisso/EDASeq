@@ -1,5 +1,5 @@
 importFrom(graphics,plot,barplot,boxplot)
-importFrom(BiocGenerics, updateObject)
+import(BiocGenerics)
 import(Biobase)
 importFrom(aroma.light,normalizeQuantileRank)
 importMethodsFrom(IRanges,width,lapply,as.list)
