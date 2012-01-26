@@ -26,8 +26,8 @@ setMethod(
                         "\n  path: ", x)
                 fq <- narrow(fq, end(fq) - minwd + 1L, end(fq))
               }
-              quality <- as(fq[strand=="+"], "matrix")
-              quality <- rbind(quality,as(fq[strand=="-"], "matrix")[,NCOL(quality):1])
+              quality <- as(fq[strand=="+" | is.na(strand)], "matrix")
+              quality <- rbind(quality,as(fq[strand=="-" & !is.na(strand)], "matrix")[,NCOL(quality):1])
               colMeans(quality)
             })
             wd <- max(sapply(quals, length))
@@ -79,8 +79,8 @@ setMethod(
                       "\n  path: ", x)
               fq <- narrow(fq, end(fq) - minwd + 1L, end(fq))
             }
-            quality <- as(fq[strand=="+"], "matrix")
-            quality <- rbind(quality,as(fq[strand=="-"], "matrix")[,NCOL(quality):1])
+            quality <- as(fq[strand=="+" | is.na(strand)], "matrix")
+            quality <- rbind(quality,as(fq[strand=="-" & !is.na(strand)], "matrix")[,NCOL(quality):1])
             boxplot(quality,...)
           }
           )
@@ -105,8 +105,8 @@ setMethod(
             bam <- scanBam(x, param=param)
             res <- bam[[1]]$seq
             strand <- bam[[1]]$strand
-            nt <- t(alphabetByCycle(res[strand=="+"]))
-            nt <- nt + t(alphabetByCycle(res[strand=="-"]))[NROW(nt):1,]
+            nt <- t(alphabetByCycle(res[strand=="+" | is.na(strand)]))
+            nt <- nt + t(alphabetByCycle(res[strand=="-" & !is.na(strand)]))[NROW(nt):1,]
             nt <- nt[,c("A","C","G","T","N")]
             nt <- t(scale(t(nt), center=FALSE, scale=rowSums(nt)))
             matplot(nt, xlab = "Cycle", ylab = "Nt frequency", type = "l", lty=1, col=1:5, ...)
