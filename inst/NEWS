@@ -1,6 +1,8 @@
 Changes in Version 1.2.0
 ------------------------
 * Fixed a bug in methods plotQuality and plotNtFrequency that now allow the strand information to be missing in the SAM/BAM file.
+* Fixed a bug in method biasPlot. It doesn't require anymore that one of the column of pData is called "conditions".
+* biasPlot method of SeqExpressionSet has now the argument "col" to specify the column of pData to use for color coding.
 
 Changes in Version 0.99.1
 ------------------------

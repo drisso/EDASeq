@@ -140,17 +140,17 @@ setMethod(
 setMethod(
           f = "biasPlot",
           signature = signature(x="matrix",y="numeric"),
-          definition = function(x,y,cutoff=1000,log=FALSE,colors=NULL,...) {
+          definition = function(x,y,cutoff=1000,log=FALSE,col=NULL,...) {
             if(log) {
               x <- log(x+1)
             }
-            if(is.null(colors)) {
-              colors <- 1:ncol(x)
+            if(is.null(col)) {
+              col <- 1:ncol(x)
             }
-            plot(lowess(y[x[,1]<=cutoff],x[x[,1]<=cutoff,1]),type='l',col=colors[1],...)
+            plot(lowess(y[x[,1]<=cutoff],x[x[,1]<=cutoff,1]),type='l',col=col[1],...)
             if(ncol(x)>1) {
               for(i in 2:ncol(x)) {
-                lines(lowess(y[x[,i]<=cutoff],x[x[,i]<=cutoff,i]),col=colors[i],type='l')
+                lines(lowess(y[x[,i]<=cutoff],x[x[,i]<=cutoff,i]),col=col[i],type='l')
               }
             }
           }
@@ -159,19 +159,14 @@ setMethod(
 setMethod(
           f = "biasPlot",
           signature = signature(x="SeqExpressionSet",y="character"),
-          definition = function(x,y,cutoff=1000,log=FALSE,...) {
-            if(ncol(exprs(x))>1) {
-              colors <- as.numeric(as.factor(pData(x)[,1]))
-            } else {
-              colors <- 1
-            }
+          definition = function(x,y,cutoff=1000,log=FALSE,col=1,...) {
             ylab <- "gene counts"
             if(log) {
               ylab <- paste(ylab,"(log)")
             }
-            biasPlot(exprs(x),fData(x)[,y],log=log,colors=colors,xlab=y,ylab=ylab,...)
+            biasPlot(exprs(x),fData(x)[,y],log=log,col=as.factor(pData(x)[,col]),xlab=y,ylab=ylab,...)
             if(ncol(exprs(x))>1) {
-            legend("topleft",unique(as.character(pData(x)[,"conditions"])),fill=unique(colors))
+            legend("topleft",unique(as.character(pData(x)[,col])),fill=unique(pData(x)[,col]))
           }
           }
           )
