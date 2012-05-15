@@ -1,17 +1,17 @@
-bibentry("TechReport",
+bibentry("Article",
          title = "{GC-Content Normalization for RNA-Seq Data}",
          author = c(person("Davide", "Risso"),
 	 person("Katja", "Schwartz"),
 	 person("Gavin", "Sherlock"),
          person("Sandrine", "Dudoit")),
          year = 2011,
-         institution = "University of California, Berkeley, Division of Biostatistics",
-         number = "291",
-         type = "",
-         url = "http://www.bepress.com/ucbbiostat/paper291/",
+         journal = "BMC Bioinformatics",
+	 volume = "12",
+         number = "1",
+	 pages = "480",
          textVersion = 
          paste("D. Risso, K. Schwartz, G. Sherlock and S. Dudoit","(2011).",
                "GC-Content Normalization for RNA-Seq Data.",
-               "Submitted"
+               "BMC Bioinformatics","12:480")
          )
 )
