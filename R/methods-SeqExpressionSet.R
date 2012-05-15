@@ -140,17 +140,19 @@ setMethod(
 setMethod(
           f = "biasPlot",
           signature = signature(x="matrix",y="numeric"),
-          definition = function(x,y,cutoff=1000,log=FALSE,col=NULL,...) {
+          definition = function(x, y, cutoff=1000, log=FALSE, col=NULL, ...) {
             if(log) {
               x <- log(x+1)
             }
             if(is.null(col)) {
               col <- 1:ncol(x)
+            } else if(length(col) < ncol(x)) {
+              col = rep(col,length.out=ncol(x))
             }
             plot(lowess(y[x[,1]<=cutoff],x[x[,1]<=cutoff,1]),type='l',col=col[1],...)
             if(ncol(x)>1) {
               for(i in 2:ncol(x)) {
-                lines(lowess(y[x[,i]<=cutoff],x[x[,i]<=cutoff,i]),col=col[i],type='l')
+                lines(lowess(y[x[,i]<=cutoff],x[x[,i]<=cutoff,i]),col=col[i],type='l',...)
               }
             }
           }
@@ -159,14 +161,19 @@ setMethod(
 setMethod(
           f = "biasPlot",
           signature = signature(x="SeqExpressionSet",y="character"),
-          definition = function(x,y,cutoff=1000,log=FALSE,col=1,...) {
-            ylab <- "gene counts"
-            if(log) {
-              ylab <- paste(ylab,"(log)")
+          definition = function(x, y, cutoff=1000, log=FALSE, color_code=NULL, legend=TRUE, col=NULL, ..., xlab = y, ylab = "gene counts") {
+            if(is.null(col)) {
+              if(is.null(color_code)) {
+                color_code <- 1
+              }
+              col <- as.numeric(as.factor(pData(x)[,color_code]))
+              flag <- TRUE
+            } else if(!is.null(color_code)) {
+              warning("If both col and color_code are specified, col overrides color_code")
             }
-            biasPlot(exprs(x),fData(x)[,y],log=log,col=as.factor(pData(x)[,col]),xlab=y,ylab=ylab,...)
-            if(ncol(exprs(x))>1) {
-            legend("topleft",unique(as.character(pData(x)[,col])),fill=unique(pData(x)[,col]))
+            biasPlot(exprs(x), fData(x)[,y], log=log, col=col, ..., xlab=xlab, ylab=ylab)
+            if(ncol(exprs(x))>1 & legend & flag) {
+            legend("topleft",unique(as.character(pData(x)[,color_code])),fill=unique(pData(x)[,color_code]))
           }
           }
           )

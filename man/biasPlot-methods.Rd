@@ -16,7 +16,7 @@ It plots a line representing the regression of every column of the matrix \code{
 }
 
 \item{\code{signature(x = "SeqExpressionSet", y = "character")}}{
-It plots a line representing the regression of every lane in \code{x} on the covariate specified by \code{y}. \code{y} must be one of the column of the \code{featureData} slot of the \code{x} object. One can pass the usual graphical parameters as additional arguments (see \code{\link{par}}). The parameter \code{col} must be a number specifying the column of \code{phenoData} to be used for color-coding. By default it is color-coded according to the first column of \code{phenoData}.
+It plots a line representing the regression of every lane in \code{x} on the covariate specified by \code{y}. \code{y} must be one of the column of the \code{featureData} slot of the \code{x} object. One can pass the usual graphical parameters as additional arguments (see \code{\link{par}}). The parameter \code{color_code} (optional) must be a number specifying the column of \code{phenoData} to be used for color-coding. By default it is color-coded according to the first column of \code{phenoData}. If \code{legend=TRUE} and \code{col} is not specified a legend with the information stored in \code{phenoData} is added.
 }
 }}
 \keyword{methods}
