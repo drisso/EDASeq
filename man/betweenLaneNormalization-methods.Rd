@@ -21,13 +21,14 @@ It returns a \code{linkS4class{SeqExpressionSet}} with the normalized counts in 
 }}
 
 \usage{
-betweenLaneNormalization(x, which=c("median","upper","full"), offset=FALSE)
+betweenLaneNormalization(x, which=c("median","upper","full"), offset=FALSE, round=TRUE)
 }
 
 \arguments{
 \item{x}{A numeric matrix representing the counts or a \code{\linkS4class{SeqExpressionSet}} object.}
 \item{which}{Method used to normalized. See the details section and the reference below for details.}
 \item{offset}{Should the normalized value be returned as an offset leaving the original counts unchanged?}
+\item{round}{If TRUE the normalization returns rounded values (pseudo-counts). Ignored if offset=TRUE.}
 }
 
 

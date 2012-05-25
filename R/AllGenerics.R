@@ -35,12 +35,12 @@ setGeneric(
 
 setGeneric(
            name = "betweenLaneNormalization",
-           def = function(x,which=c("median","upper","full"),offset=FALSE) {standardGeneric("betweenLaneNormalization")}
+           def = function(x, which=c("median","upper","full"), offset=FALSE, round=TRUE) {standardGeneric("betweenLaneNormalization")}
            )
 
 setGeneric(
            name = "withinLaneNormalization",
-           def = function(x,y,which=c("loess","median","upper","full"),offset=FALSE,num.bins=10) {standardGeneric("withinLaneNormalization")}
+           def = function(x, y, which=c("loess","median","upper","full"), offset=FALSE, num.bins=10, round=TRUE) {standardGeneric("withinLaneNormalization")}
            )
 
 setGeneric(

@@ -25,7 +25,7 @@ It returns a \code{\linkS4class{SeqExpressionSet}} with the normalized counts in
 }}
 
 \usage{
-withinLaneNormalization(x, y, which=c("loess","median","upper","full"), offset=FALSE, num.bins=10)
+withinLaneNormalization(x, y, which=c("loess","median","upper","full"), offset=FALSE, num.bins=10, round=TRUE)
 }
 
 \arguments{
@@ -34,6 +34,7 @@ withinLaneNormalization(x, y, which=c("loess","median","upper","full"), offset=F
 \item{which}{Method used to normalized. See the details section and the reference below for details.}
 \item{offset}{Should the normalized value be returned as an offset leaving the original counts unchanged?}
 \item{num.bins}{The number of bins used to stratify the covariate for \code{median}, \code{upper} and \code{full} methods. Ignored if \code{loess}. See the reference for a discussion on the number of bins.}
+\item{round}{If TRUE the normalization returns rounded values (pseudo-counts). Ignored if offset=TRUE.}
 }
 
 \details{

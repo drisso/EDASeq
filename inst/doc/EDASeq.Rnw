@@ -8,9 +8,10 @@
 
 \SweaveOpts{eps=FALSE,echo=TRUE,png=TRUE,pdf=FALSE,figs.only=TRUE}
 \usepackage{times}
-\usepackage[numbers]{natbib}
+\usepackage[numbers,sort&compress]{natbib}
 \usepackage[colorlinks=TRUE,urlcolor=blue,citecolor=blue]{hyperref}
 \usepackage{subfigure}
+\usepackage{amsmath}
 
 \newcommand{\Rfunction}[1]{{\texttt{#1}}}
 \newcommand{\Robject}[1]{{\texttt{#1}}}
@@ -29,7 +30,7 @@
 
 \title{\Rpackage{EDASeq}: Exploratory Data Analysis and Normalization for RNA-Seq}
 \author{Davide Risso}
-\date{Modified: October 7, 2011.  Compiled: \today}
+\date{Modified: May 22, 2012.  Compiled: \today}
 \begin{document}
 
 \maketitle
@@ -61,9 +62,9 @@ To illustrate the functionality of the \Rpackage{EDASeq} package, we
 make use of the {\it Saccharomyces cerevisiae} RNA-Seq data from
 \citet{lee2008novel}. Briefly, a wild-type strain and three mutant
 strains were sequenced using the Solexa 1G Genome Analyzer.  For each
-strain, there are two technical replicate lanes from the same library
+strain, there are four technical replicate lanes from the same library
 preparation. The reads were aligned using \Bowtie
-\citep{langmead2009ultrafast} with unique mapping and allowing up to
+\citep{langmead2009ultrafast}, with unique mapping and allowing up to
 two mismatches.
 
 The \Rpackage{leeBamViews} package provides a subset of the aligned
@@ -72,8 +73,8 @@ bases 800,000 and 900,000 of chromosome XIII are considered. We use
 these reads to illustrate read-level EDA.
 
 The \Rpackage{yeastRNASeq} package contains gene-level read counts for
-four lanes: the two replicates of the wild-type strain (``wt'') and
-the two replicates of one of the mutant strains (``mut'').  We use
+four lanes: two replicates of the wild-type strain (``wt'') and
+two replicates of one of the mutant strains (``mut'').  We use
 these data to illustrate gene-level EDA.
 
 <<data>>=
@@ -137,11 +138,12 @@ bfs
 \paragraph{Numbers of unaligned and aligned reads.}
 
 One important check for quality control is to look at the total number
-of reads produced in each lane, the number of reads mapped to a
-reference genome, and the percentage of mapped reads. A low total
+of reads produced in each lane, the number and the percentage of reads mapped to a
+reference genome. A low total
 number of reads might be a symptom of low quality of the input RNA,
 while a low mapping percentage might indicate poor quality of the
-reads (low complexity) or problems with the reference genome.
+reads (low complexity), problems with the reference genome, or
+mislabeled lanes.
 
 <<plot-total,fig=TRUE,include=FALSE>>=
 colors <- c(rep(rgb(1,0,0,alpha=0.7),2),rep(rgb(0,0,1,alpha=0.7),2),
@@ -157,7 +159,7 @@ not provide unaligned reads, but barplots of the total number of reads
 can be obtained using the \Rcode{barplot} method for the
 \Rclass{FastqFileList} class. Analogously, one can plot the percentage
 of mapped reads with the \Rcode{plot} method with signature
-\Rclass{BamFileList}, \Rclass{FastqFileList}. See the manual pages for
+\texttt{c(x="BamFileList", y="FastqFileList")}. See the manual pages for
 details.
 
 \begin{figure}
@@ -262,7 +264,7 @@ head(geneLevelData)
 Since it is useful to explore biases related to length and GC-content,
 the \Rpackage{EDASeq} package provides, for illustration purposes,
 length and GC-content for \emph{S. cerevisiae} genes (based on SGD
-annotation \citep{sgd}).
+annotation, version r64 \citep{sgd}).
 
 <<load-lgc>>=
 data(yeastGC)
@@ -372,11 +374,11 @@ expect the points in Figures \ref{fig9a} and \ref{fig9b} to be evenly
 scattered around the black line).
 
 <<plot-mean-var-mut,fig=TRUE,include=FALSE>>=
-meanVarPlot(data[,1:2],log=T)
+meanVarPlot(data[,1:2],log=T, ylim=c(0,16))
 @ 
 
 <<plot-mean-var-all,fig=TRUE,include=FALSE>>=
-meanVarPlot(data,log=T)
+meanVarPlot(data,log=T, ylim=c(0,16))
 @ 
 
 Note that the mean-variance relationship should be examined within
@@ -482,7 +484,7 @@ the upper-quartile (\Rcode{upper}), and full-quantile normalization
 (\Rcode{full}).
 
 Figure \ref{fig11} shows how after full-quantile within- and
-between-lane normalization,the GC-content bias is reduced and the
+between-lane normalization, the GC-content bias is reduced and the
 distribution of the counts is the same in each lane.
 
 <<plot-gc-norm,fig=TRUE,include=FALSE>>=
@@ -539,21 +541,25 @@ with two of the most widely used packages for differential expression;
 our aim is not to compare differential expression strategies (e.g.,
 normalized counts vs. offset).
 
-\subsection{edgeR}
+\subsection{edgeR}\label{edger}
 
 We can perform a differential expression analysis with
 \Rpackage{edgeR} based on the original counts by passing an offset to
-the generalized linear model. Here, we estimate a common dispersion
-parameter for all genes.
+the generalized linear model. For simplicity, we estimate a common dispersion
+parameter for all genes. See the \Rpackage{edgeR} vignette for details
+about how to perform a differential expression analysis using a
+gene-specific dispersion or more complex designs.
 
 <<edger>>=
 library(edgeR)
-design <- model.matrix(~conditions,data=pData(data))
+design <- model.matrix(~conditions, data=pData(dataOffset))
 disp <- estimateGLMCommonDisp(exprs(dataOffset), 
-                              design, offst(dataOffset))
-fit <- glmFit(exprs(dataOffset),design,disp,offst(dataOffset))
-lrt <- glmLRT(exprs(dataOffset),fit,coef=2)
-head(lrt$table)
+                              design, offset=-offst(dataOffset))
+
+fit <- glmFit(exprs(dataOffset), design, disp, offset=-offst(dataOffset))
+
+lrt <- glmLRT(exprs(dataOffset), fit, coef=2)
+topTags(lrt)
 @ 
 
 \subsection{DESeq}
@@ -569,7 +575,7 @@ between-lane normalization. One could also consider only within-lane
 normalization and account for differences in sequencing depth by
 estimating the size factors using \Rpackage{DESeq}.
 
-<<deseq,eval=FALSE>>=
+<<deseq>>=
 library(DESeq)
 counts <- as(dataNorm,"CountDataSet")
 sizeFactors(counts) <- rep(1,4)
@@ -577,6 +583,65 @@ counts <- estimateDispersions(counts)
 res <- nbinomTest(counts, "wt", "mut" )
 head(res)
 @ 
+
+\section{Definitions and conventions}
+
+\subsection{Rounding}
+After either within-lane or between-lane normalization, the expression
+values are not counts
+anymore. However, their distribution still shows some typical features
+of counts distribution (e.g., the variance depends on the mean).
+Hence, for most applications, it is useful to round the normalized
+values to recover count-like values, which we refer to as ``pseudo-counts''. 
+
+By default, both
+\Rfunction{withinLaneNormalization} and
+\Rfunction{betweenLaneNormalization} round the normalized values to
+the closest integer. This behavior can be changed by specifying
+\texttt{round=FALSE}. This gives the user more flexibility and assures
+that rounding approximations do not affect subsequent computations
+(e.g., recovering the offset from the normalized counts).
+
+\subsection{Zero counts}
+To avoid problems in the computation of logarithms (e.g. in log-fold-changes), we add a small positive constant (namely $0.1$) to the
+counts. For instance, the log-fold-change between $y_1$ and $y_2$ is
+defined as 
+\begin{equation*}
+  \frac{\log(y_1 + 0.1)}{\log(y_2 + 0.1)}.
+\end{equation*}
+
+\subsection{Offset}
+We define an offset in the normalization as
+\begin{equation*}
+  o = \log(y_{norm} + 0.1) - \log(y_{raw} + 0.1),
+\end{equation*}
+where $y_{norm}$ and $y_{raw}$ are the normalized and raw counts, respectively.
+
+One can easily recover the normalized data from the raw counts and
+offset, as shown here:
+
+<<unrounded>>=
+dataNorm <- betweenLaneNormalization(data, round=FALSE)
+dataOffset <- betweenLaneNormalization(data, offset=TRUE)
+
+norm1 <- exprs(dataNorm)
+norm2 <- exp(log(exprs(dataOffset) + 0.1 ) + offst(dataOffset)) - 0.1
+
+head(norm1 - norm2)
+@ 
+
+Note that the small constant added in the definition of offset does
+not matter when pseudo-counts are considered, i.e.,
+
+<<rounded>>= 
+head(round(exprs(dataNorm)) - round(exprs(dataOffset) * exp(offst(dataOffset))))
+@ 
+
+We defined the offset as the log-ratio between normalized and raw
+counts. However, the \Rpackage{edgeR} functions expect as offset
+argument the log-ratio between raw and normalized counts. One must use
+\texttt{-offst(offsetData)} as the offset argument of \Rpackage{edgeR}
+(see Section \ref{edger}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{SessionInfo}
