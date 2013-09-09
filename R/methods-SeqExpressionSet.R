@@ -313,10 +313,10 @@ setMethod(
 setAs("SeqExpressionSet",
       "CountDataSet",
       function(from) {
-        if(!("conditions" %in% colnames(pData(data)))) {
+        if(!("conditions" %in% colnames(pData(from)))) {
           stop("phenoData must contain a column named 'conditions'")
         }
-        if(NCOL(pData(data))==1 & length(levels(pData(data)$conditions))==2) {
+        if(NCOL(pData(from))==1 & length(levels(pData(from)$conditions))==2) {
           newCountDataSet(round(exprs(from)),pData(from)[,1])
         } else {
           newCountDataSet(round(exprs(from)), pData(from), sizeFactors = NULL, featureData = featureData(from))
