@@ -1,13 +1,22 @@
 Package: EDASeq
-Version: 1.9.1
+Version: 1.9.2
 Title: Exploratory Data Analysis and Normalization for RNA-Seq
-Description: Numerical and graphical summaries of RNA-Seq read data.  Within-lane normalization procedures to adjust for GC-content effect (or other gene-level effects) on read counts: loess robust local regression, global-scaling, and full-quantile normalization (Risso et al., 2011). Between-lane normalization procedures to adjust for distributional differences between lanes (e.g., sequencing depth): global-scaling and full-quantile normalization (Bullard et al., 2010).
+Description: Numerical and graphical summaries of RNA-Seq read data.
+        Within-lane normalization procedures to adjust for GC-content
+        effect (or other gene-level effects) on read counts: loess
+        robust local regression, global-scaling, and full-quantile
+        normalization (Risso et al., 2011). Between-lane normalization
+        procedures to adjust for distributional differences between
+        lanes (e.g., sequencing depth): global-scaling and
+        full-quantile normalization (Bullard et al., 2010).
 Author: Davide Risso and Sandrine Dudoit
 Maintainer: Davide Risso <risso.davide@gmail.com>
 Date: 08-30-2011
-Depends: BiocGenerics (>= 0.1.3), Biobase (>= 2.15.1), ShortRead (>= 1.11.42), Rsamtools (>= 1.5.75), aroma.light
+Depends: BiocGenerics (>= 0.1.3), Biobase (>= 2.15.1), ShortRead (>=
+        1.11.42), Rsamtools (>= 1.5.75), aroma.light
 Imports: methods, graphics, BiocGenerics, IRanges (>= 1.13.9), DESeq
 Suggests: yeastRNASeq, leeBamViews, edgeR, DESeq
 License: Artistic-2.0
 LazyLoad: yes
-biocViews: HighThroughputSequencing, RNAseq, Preprocessing, QualityControl, DifferentialExpression
+biocViews: Sequencing, RNASeq, Preprocessing, QualityControl,
+        DifferentialExpression
