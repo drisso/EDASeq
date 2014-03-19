@@ -48,3 +48,7 @@ setGeneric(
            def = function(x,...) {standardGeneric("plotNtFrequency")}
            )
 
+setGeneric(
+           name = "plotRLE",
+           def = function(x,...) {standardGeneric("plotRLE")}
+           )

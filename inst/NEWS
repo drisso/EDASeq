@@ -1,3 +1,7 @@
+Changes in Version 1.9
+-----------------------
+* Added method plotRLE for Relative Log Expression (RLE) plots.
+
 Changes in Version 1.3
 ------------------------
 * Fixed a bug in biasPlot relative to the lwd, xlab and ylab arguments.
