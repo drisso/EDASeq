@@ -1,5 +1,5 @@
 Package: EDASeq
-Version: 1.9.3
+Version: 1.10.0
 Title: Exploratory Data Analysis and Normalization for RNA-Seq
 Description: Numerical and graphical summaries of RNA-Seq read data.
         Within-lane normalization procedures to adjust for GC-content
