@@ -19,7 +19,7 @@ It returns a matrix with the normalized counts if \code{offset=FALSE} or with th
 
 \item{\code{signature(x = "SeqExpressionSet", y = "character")}}{
 
-It returns a \code{\linkS4class{SeqExpressionSet}} with the normalized counts in the \code{exprs} slot if \code{offset=FALSE} or with the offset in the \code{offset} slot and the original counts in the \code{exprs} slot if \code{offset=TRUE}.
+It returns a \code{\linkS4class{SeqExpressionSet}} with the normalized counts in the \code{normalizedCounts} slot and with the offset in the \code{offset} slot (if \code{offset=TRUE}).
 
 }
 }}
@@ -63,13 +63,17 @@ library(yeastRNASeq)
 data(geneLevelData)
 data(yeastGC)
 
-sub <- intersect(rownames(geneLevelData),names(yeastGC))
+sub <- intersect(rownames(geneLevelData), names(yeastGC))
 
-mat <- as.matrix(geneLevelData[sub,])
+mat <- as.matrix(geneLevelData[sub, ])
 
-data <- newSeqExpressionSet(mat,phenoData=AnnotatedDataFrame(data.frame(conditions=factor(c("mut","mut","wt","wt")),row.names=colnames(geneLevelData))),featureData=AnnotatedDataFrame(data.frame(gc=yeastGC[sub])))
+data <- newSeqExpressionSet(mat,
+                            phenoData=AnnotatedDataFrame(
+                                      data.frame(conditions=factor(c("mut", "mut", "wt", "wt")),
+                                                 row.names=colnames(geneLevelData))),
+                            featureData=AnnotatedDataFrame(data.frame(gc=yeastGC[sub])))
 
-norm <- withinLaneNormalization(data,"gc",which="full",offset=FALSE)
+norm <- withinLaneNormalization(data, "gc", which="full", offset=FALSE)
 
 }
 \keyword{methods}

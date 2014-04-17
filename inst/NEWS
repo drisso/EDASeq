@@ -1,3 +1,14 @@
+Changes in Version 1.99 (Major update)
+----------------------
+* "exprs" and "exprs<-" are now deprecated: use "counts" and "counts<-" instead (for compatibility with the DESeq class).
+* "counts" now accesses the original counts (even after normalization) and "normCounts" accesses the normalized counts.
+* Added the slot "normalizedCounts" to the SeqExpressionSet class: now the normalization functions will save the normalized counts in this new slot while keeping the original counts in "counts."
+* Added option to "MDPlot" to visualize control genes in red.
+* withinLaneNormalization and betweenLaneNormalization now always store the normalized counts in the normalizedCounts slot, even when offset=TRUE is used.
+* Added a new method plotPCA for Principal Components Analysis (PCA) plots.
+* Updated the vignette to reflect these changes.
+* DESCRIPTION and NAMESPACE cleaned up.
+
 Changes in Version 1.9
 -----------------------
 * Added method plotRLE for Relative Log Expression (RLE) plots.

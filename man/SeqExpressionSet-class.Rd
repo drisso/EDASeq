@@ -3,6 +3,8 @@
 \alias{SeqExpressionSet-class}
 \alias{offst}
 \alias{offst<-}
+\alias{normCounts}
+\alias{normCounts<-}
 \alias{initialize,SeqExpressionSet-method}
 \alias{exprs,SeqExpressionSet-method}
 \alias{exprs<-,SeqExpressionSet,ANY-method}
@@ -10,6 +12,11 @@
 \alias{offst<-,SeqExpressionSet,ANY-method}
 \alias{offst<-,SeqExpressionSet-method}
 \alias{coerce,SeqExpressionSet,CountDataSet-method}
+\alias{counts,SeqExpressionSet-method}
+\alias{counts<-,SeqExpressionSet,ANY-method}
+\alias{normCounts,SeqExpressionSet-method}
+\alias{normCounts<-,SeqExpressionSet,ANY-method}
+\alias{normCounts<-,SeqExpressionSet-method}
 
 
 
@@ -40,9 +47,9 @@ This class represents a collection of digital expression data (usually counts fr
   \describe{
      \item{\code{assayData}}{Contains matrices with equal dimensions, and with
           column number equal to \code{nrow(phenoData)}.\code{assayData} must
-          contain a matrix \code{exprs} with rows represening features
+          contain a matrix \code{counts} with rows represening features
           (e.g., genes) and columns representing samples.
-          The optional matrix \code{offset} can be added to represent a normalization offset to be used for differential expression analysis. See the vignette for details.
+          The optional matrices \code{normalizedCounts} and \code{offset} can be added to represent a normalization in terms of pseudo-counts or offset, respectively, to be used for subsequent analyses. See the vignette for details.
           Class: \code{\link{AssayData-class}}.}
 
     \item{\code{phenoData}}{Sample information. For compatibility with DESeq, there should be at least the column \code{conditions}. See \code{\link{eSet}} for details.}
@@ -63,9 +70,13 @@ This class represents a collection of digital expression data (usually counts fr
 
   \describe{
 
-    \item{exprs}{\code{signature(object="SeqExpressionSet")}: returns the \code{exprs} matrix. }
+    \item{counts}{\code{signature(object="SeqExpressionSet")}: returns the \code{counts} matrix. }
 
-    \item{exprs<-}{\code{signature(object = "SeqExpressionSet")}: method to replace the \code{exprs} matrix.}
+    \item{counts<-}{\code{signature(object = "SeqExpressionSet")}: method to replace the \code{counts} matrix.}
+
+    \item{normCounts}{\code{signature(object="SeqExpressionSet")}: returns the \code{normalizedCounts} matrix. }
+
+    \item{normCounts<-}{\code{signature(object = "SeqExpressionSet")}: method to replace the \code{normalizedCounts} matrix.}
 
     \item{offst}{\code{signature(object = "SeqExpressionSet")}:  returns the \code{offset} matrix.}
 
@@ -95,16 +106,17 @@ This class represents a collection of digital expression data (usually counts fr
 
 showMethods(class="SeqExpressionSet", where=getNamespace("EDASeq"))
 
-exprs <- matrix(data=0,nrow=100,ncol=4)
+counts <- matrix(data=0, nrow=100, ncol=4)
 for(i in 1:4) {
-exprs[,i] <- rpois(100,lambda=50)
+counts[,i] <- rpois(100,lambda=50)
 }
-cond <- c(rep("A",2),rep("B",2))
+cond <- c(rep("A", 2), rep("B", 2))
 
-counts <- newSeqExpressionSet(exprs,phenoData=AnnotatedDataFrame(data.frame(conditions=cond)))
+data <- newSeqExpressionSet(counts, phenoData=AnnotatedDataFrame(data.frame(conditions=cond)))
 
-head(exprs(counts))
-boxplot(counts,col=as.numeric(pData(counts)[,1])+1)
+head(counts(data))
+boxplot(data, col=as.numeric(pData(data)[,1])+1)
+
 }
 
 \keyword{classes}

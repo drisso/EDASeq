@@ -43,7 +43,11 @@ data(geneLevelData)
 
 mat <- as.matrix(geneLevelData)
 
-data <- newSeqExpressionSet(mat,phenoData=AnnotatedDataFrame(data.frame(conditions=factor(c("mut","mut","wt","wt")),row.names=colnames(geneLevelData))))
+data <- newSeqExpressionSet(mat,
+                            phenoData=AnnotatedDataFrame(
+                                      data.frame(conditions=factor(c("mut", "mut", "wt", "wt")),
+                                                 row.names=colnames(geneLevelData))))
+
 
 plotRLE(data, col=rep(2:3, each=2))
 

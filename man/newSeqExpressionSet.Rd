@@ -8,14 +8,22 @@ Function to create a new \code{\linkS4class{SeqExpressionSet}} object.
 User-level function to create new objects of the class \code{\linkS4class{SeqExpressionSet}}.
 }
 \usage{
-newSeqExpressionSet(exprs, offset=matrix(data=0,nrow=nrow(exprs),ncol=ncol(exprs),dimnames=dimnames(exprs)), phenoData=annotatedDataFrameFrom(exprs, FALSE), featureData=annotatedDataFrameFrom(exprs, TRUE), ...)
+newSeqExpressionSet(counts,
+                    normalizedCounts = matrix(data=NA, nrow=nrow(counts), ncol=ncol(counts), dimnames=dimnames(counts)),
+                    offset = matrix(data=0, nrow=nrow(counts), ncol=ncol(counts), dimnames=dimnames(counts)),
+                    phenoData = annotatedDataFrameFrom(counts, FALSE),
+                    featureData = annotatedDataFrameFrom(counts, TRUE),
+                    ...)
 }
 \arguments{
-  \item{exprs}{
+  \item{counts}{
   A matrix containing the counts for an RNA-Seq experiment. One column for each lane and one row for each gene.
 }
+  \item{normalizedCounts}{
+   A matrix with the same dimensions of \code{counts} with the normalized counts.
+}
   \item{offset}{
- A matrix with the same dimensions of \code{exprs} defining the offset (usually useful for normalization purposes). See the package vignette for a discussion on the offset.
+ A matrix with the same dimensions of \code{counts} defining the offset (usually useful for normalization purposes). See the package vignette for a discussion on the offset.
 }
   \item{phenoData}{
 A data.frame or \code{\link{AnnotatedDataFrame}} with sample information, such as biological condition, library preparation protocol, flow-cell,...
@@ -40,12 +48,13 @@ Davide Risso
 \code{\linkS4class{SeqExpressionSet}}
 }
 \examples{
-exprs <- matrix(data=0,nrow=100,ncol=4)
-for(i in 1:4) {
-exprs[,i] <- rpois(100,lambda=50)
-}
-cond <- c(rep("A",2),rep("B",2))
 
-counts <- newSeqExpressionSet(exprs,phenoData=data.frame(conditions=cond))
+counts <- matrix(data=0, nrow=100, ncol=4)
+for(i in 1:4) {
+counts[, i] <- rpois(100, lambda=50)
+}
+cond <- c(rep("A", 2), rep("B", 2))
+
+counts <- newSeqExpressionSet(counts, phenoData=data.frame(conditions=cond))
 
 }

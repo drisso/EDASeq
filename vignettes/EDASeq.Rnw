@@ -6,45 +6,31 @@
 %\VignettePackage{EDASeq}
 \documentclass{article}
 
-\SweaveOpts{eps=FALSE,echo=TRUE,png=TRUE,pdf=FALSE,figs.only=TRUE}
+<<style, eval=TRUE, echo=FALSE, results="asis">>=
+BiocStyle::latex()
+@
+
 \usepackage{times}
 \usepackage[numbers,sort&compress]{natbib}
-\usepackage[colorlinks=TRUE,urlcolor=blue,citecolor=blue]{hyperref}
-\usepackage{subfigure}
+\usepackage{subfig}
 \usepackage{amsmath}
 
-\newcommand{\Rfunction}[1]{{\texttt{#1}}}
-\newcommand{\Robject}[1]{{\texttt{#1}}}
-\newcommand{\Rpackage}[1]{{\textit{#1}}}
-\newcommand{\Rmethod}[1]{{\texttt{#1}}}
-\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
-\newcommand{\Rclass}[1]{{\textit{#1}}}
-\newcommand{\Rcode}[1]{{\texttt{#1}}}
 
-\newcommand{\software}[1]{\textsf{#1}}
-\newcommand{\R}{\software{R}}
-\newcommand{\EDASeq}{\Rpackage{EDASeq}}
-
-\newcommand{\Bowtie}{\software{Bowtie} }
-
-
-\title{\Rpackage{EDASeq}: Exploratory Data Analysis and Normalization for RNA-Seq}
+\title{\Biocpkg{EDASeq}: Exploratory Data Analysis and Normalization for RNA-Seq}
 \author{Davide Risso}
-\date{Modified: May 22, 2012.  Compiled: \today}
+\date{Modified: March 25, 2014.  Compiled: \today}
 \begin{document}
 
 \maketitle
 
-<<echo=FALSE>>=
-options(width=60)
-@ 
+\tableofcontents
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
 In this document, we show how to conduct Exploratory Data Analysis
 (EDA) and normalization for a typical RNA-Seq experiment using the
-package \Rpackage{EDASeq}.
+package \Biocpkg{EDASeq}.
 
 One can think of EDA for RNA-Seq as a two-step process: ``read-level''
 EDA helps in discovering lanes with low sequencing depths, quality
@@ -58,24 +44,29 @@ gene-specific (and possibly lane-specific) effects on read counts
 (e.g., related to gene length or GC-content) and for between-lane
 distributional differences in read counts (e.g., sequencing depths).
 
-To illustrate the functionality of the \Rpackage{EDASeq} package, we
+To illustrate the functionality of the \Biocpkg{EDASeq} package, we
 make use of the {\it Saccharomyces cerevisiae} RNA-Seq data from
 \citet{lee2008novel}. Briefly, a wild-type strain and three mutant
 strains were sequenced using the Solexa 1G Genome Analyzer.  For each
 strain, there are four technical replicate lanes from the same library
-preparation. The reads were aligned using \Bowtie
+preparation. The reads were aligned using \software{Bowtie}
 \citep{langmead2009ultrafast}, with unique mapping and allowing up to
 two mismatches.
 
-The \Rpackage{leeBamViews} package provides a subset of the aligned
+The \Biocexptpkg{leeBamViews} package provides a subset of the aligned
 reads in BAM format. In particular, only the reads mapped between
 bases 800,000 and 900,000 of chromosome XIII are considered. We use
 these reads to illustrate read-level EDA.
 
-The \Rpackage{yeastRNASeq} package contains gene-level read counts for
+The \Biocexptpkg{yeastRNASeq} package contains gene-level read counts for
 four lanes: two replicates of the wild-type strain (``wt'') and
 two replicates of one of the mutant strains (``mut'').  We use
 these data to illustrate gene-level EDA.
+
+<<setup, echo=FALSE>>=
+opts_chunk$set(dev="pdf", fig.align="center", cache=FALSE, message=FALSE, out.width=".55\\textwidth", echo=TRUE, results="markup", fig.show="hold")
+options(width=60)
+@
 
 <<data>>=
 require(EDASeq)
@@ -90,17 +81,17 @@ require(leeBamViews)
 \paragraph{Unaligned reads.}
 
 Unaligned (unmapped) reads stored in FASTQ format may be managed via
-the class \Rclass{FastqFileList} imported from \Rpackage{ShortRead}.
+the class \Rclass{FastqFileList} imported from \Biocpkg{ShortRead}.
 Information related to the libraries sequenced in each lane can be
 stored in the \Rcode{elementMetadata} slot of the
 \Rclass{FastqFileList} object.
 
-<<import-raw,results=verbatim>>=
-files <- list.files(file.path(system.file(package = "yeastRNASeq"),
-                    "reads"), pattern = "fastq", full.names = TRUE)
+<<import-raw>>=
+files <- list.files(file.path(system.file(package = "yeastRNASeq"), 
+                              "reads"), pattern = "fastq", full.names = TRUE)
 names(files) <- gsub("\\.fastq.*", "", basename(files))
-met <- DataFrame(conditions=c(rep("mut",2),rep("wt",2)),
-                  row.names=names(files))
+met <- DataFrame(conditions=c(rep("mut",2), rep("wt",2)), 
+                 row.names=names(files))
 fastq <- FastqFileList(files)
 elementMetadata(fastq) <- met
 fastq
@@ -109,13 +100,13 @@ fastq
 \paragraph{Aligned reads.}
 
 The package can deal with aligned (mapped) reads in BAM format, using
-the class \Rclass{BamFileList} from \Rpackage{Rsamtools}.  Again, the
+the class \Rclass{BamFileList} from \Biocpkg{Rsamtools}.  Again, the
 \Rcode{elementMetadata} slot can be used to store lane-level sample
 information.
 
-<<import-aligned,results=verbatim>>=
-files <- list.files(file.path(system.file(package = "leeBamViews"),
-                    "bam"), pattern = "bam$", full.names = TRUE)
+<<import-aligned>>=
+files <- list.files(file.path(system.file(package = "leeBamViews"), "bam"),
+                    pattern = "bam$", full.names = TRUE)
 names(files) <- gsub("\\.bam", "", basename(files))
 
 gt <- gsub(".*/", "", files)
@@ -123,7 +114,8 @@ gt <- gsub("_.*", "", gt)
 lane <- gsub(".*(.)$", "\\1", gt)
 geno <- gsub(".$", "", gt)
 
-pd <- DataFrame(geno=geno, lane=lane, row.names=paste(geno,lane,sep="."))
+pd <- DataFrame(geno=geno, lane=lane,
+                row.names=paste(geno,lane,sep="."))
 
 bfs <- BamFileList(files)
 elementMetadata(bfs) <- pd
@@ -145,94 +137,58 @@ while a low mapping percentage might indicate poor quality of the
 reads (low complexity), problems with the reference genome, or
 mislabeled lanes.
 
-<<plot-total,fig=TRUE,include=FALSE>>=
-colors <- c(rep(rgb(1,0,0,alpha=0.7),2),rep(rgb(0,0,1,alpha=0.7),2),
-            rep(rgb(0,1,0,alpha=0.7),2),rep(rgb(0,1,1,alpha=0.7),2))
+<<plot-total, fig.cap="Per-lane number of mapped reads and quality scores", fig.subcap=c("Number of mapped reads", "Mean per-base quality of mapped reads"), out.width='.49\\linewidth'>>=
+colors <- c(rep(rgb(1,0,0,alpha=0.7),2), 
+            rep(rgb(0,0,1,alpha=0.7),2),
+            rep(rgb(0,1,0,alpha=0.7),2),
+            rep(rgb(0,1,1,alpha=0.7),2))
 barplot(bfs,las=2,col=colors)
+
+plotQuality(bfs,col=colors,lty=1)
+legend("topright",unique(elementMetadata(bfs)[,1]), fill=unique(colors))
 @ 
 
-Figure \ref{fig1}, produced using the \Rcode{barplot} method for the
+Figure \ref{fig:plot-total}a, produced using the \Rcode{barplot} method for the
 \Rclass{BamFileList} class, displays the number of mapped reads for
 the subset of the yeast dataset included in the package
-\Rpackage{leeBamViews}.  Unfortunately, \Rpackage{leeBamViews} does
+\Biocpkg{leeBamViews}.  Unfortunately, \Biocpkg{leeBamViews} does
 not provide unaligned reads, but barplots of the total number of reads
 can be obtained using the \Rcode{barplot} method for the
-\Rclass{FastqFileList} class. Analogously, one can plot the percentage
+\Biocpkg{FastqFileList} class. Analogously, one can plot the percentage
 of mapped reads with the \Rcode{plot} method with signature
 \texttt{c(x="BamFileList", y="FastqFileList")}. See the manual pages for
 details.
-
-\begin{figure}
-  \centering
-  \subfigure[Number of mapped reads]{
-  \includegraphics[width=.45\textwidth]{EDASeq-plot-total}
-    \label{fig1}
-  }
-  \subfigure[Mean per-base quality of mapped reads]{
-    \includegraphics[width=.45\textwidth]{EDASeq-plot-mean-qual}
-    \label{fig2}
-   }   
-   \caption{Per-lane number of mapped reads and quality scores.}
-\end{figure}
 
 \paragraph{Read quality scores.}
 
 As an additional quality check, one can plot the mean per-base (i.e.,
 per-cycle) quality of the unmapped or mapped reads in every lane
-(Figure \ref{fig2}).
-
-<<plot-mean-qual,fig=TRUE,include=FALSE>>=
-plotQuality(bfs,col=colors,lty=1)
-legend("topright",unique(elementMetadata(bfs)[,1]),
-       fill=unique(colors))
-@ 
+(Figure \ref{fig:plot-total}b).
 
 \paragraph{Individual lane summaries.}
 
 If one is interested in looking more thoroughly at one lane, it is
 possible to display the per-base distribution of quality scores for
-each lane (Figure \ref{fig5}) and the number of mapped reads
-stratified by chromosome (Figure \ref{fig6}) or strand. As expected,
+each lane (Figure \ref{fig:plot-qual}a) and the number of mapped reads
+stratified by chromosome (Figure \ref{fig:plot-qual}b) or strand. As expected,
 all the reads are mapped to chromosome XIII.
 
-<<plot-qual-1,fig=TRUE,include=FALSE>>=
+<<plot-qual, fig.cap="Quality scores and number of mapped reads for lane 'isowt5\\_13e.'", fig.subcap=c("Per-base quality of mapped reads", "Number of mapped reads per-chromosome"), out.width='.49\\linewidth'>>=
 plotQuality(bfs[[1]],cex.axis=.8)
-@ 
-
-<<plot-mapped-1,fig=TRUE,include=FALSE>>=
 barplot(bfs[[1]],las=2)
 @ 
-
-\begin{figure}
-  \centering
-  \subfigure[Per-base quality of mapped reads]{
-    \includegraphics[width=.45\textwidth]{EDASeq-plot-qual-1}
-    \label{fig5}
-  } 
-  \subfigure[Number of mapped reads per-chromosome]{
-    \includegraphics[width=.45\textwidth]{EDASeq-plot-mapped-1}
-    \label{fig6}
-  }
-  \caption{Quality scores and number of mapped reads for lane ``isowt5\_13e''.}
-\end{figure}
 
 \paragraph{Read nucleotide distributions.}
 
 A potential source of bias is related to the sequence composition of
 the reads. The function \mbox{\Rfunction{plotNtFrequency}} plots the
 per-base nucleotide frequencies for all the reads in a given
-lane (Figure \ref{fig7}).
+lane (Figure \ref{fig:plot-nt}).
 
-<<plot-nt-1,fig=TRUE,include=FALSE>>=
+<<plot-nt, fig.cap="Per-base nucleotide frequencies of mapped reads for lane 'isowt5\\_13e.'", out.width='.49\\linewidth'>>=
 plotNtFrequency(bfs[[1]])
 @ 
 
-\begin{figure}
-  \centering
-  \includegraphics[width=.55\textwidth]{EDASeq-plot-nt-1}
-  \caption{Per-base nucleotide frequencies of mapped reads for lane ``isowt5\_13e''.}
-  \label{fig7}   
-\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Gene-level EDA}
@@ -246,14 +202,14 @@ scale and gene-level EDA is equally important.
 
 There are several Bioconductor packages for aggregating reads over
 genes (or other genomic regions, such as, transcripts and exons) given
-a particular genome annotation, e.g., \Rpackage{IRanges},
-\Rpackage{ShortRead}, \Rpackage{Genominator}, \Rpackage{Rsubread}. See
+a particular genome annotation, e.g., \Biocpkg{IRanges},
+\Biocpkg{ShortRead}, \Biocpkg{Genominator}, \Biocpkg{Rsubread}. See
 their respective vignettes for details.
 
 Here, we consider this step done and load the object
-\Robject{geneLevelData} from \Rpackage{yeastRNASeq}, which provides
+\Robject{geneLevelData} from \Biocexptpkg{yeastRNASeq}, which provides
 gene-level counts for 2 wild-type and 2 mutant lanes from the yeast
-dataset of \citet{lee2008novel} (see the \Rpackage{Genominator}
+dataset of \citet{lee2008novel} (see the \Biocpkg{Genominator}
 vignette for an example on the same dataset).
 
 <<load-gene-level>>=
@@ -262,7 +218,7 @@ head(geneLevelData)
 @ 
 
 Since it is useful to explore biases related to length and GC-content,
-the \Rpackage{EDASeq} package provides, for illustration purposes,
+the \Biocpkg{EDASeq} package provides, for illustration purposes,
 length and GC-content for \emph{S. cerevisiae} genes (based on SGD
 annotation, version r64 \citep{sgd}).
 
@@ -280,13 +236,14 @@ and for which we have length and GC-content information.
 <<filter>>=
 filter <- apply(geneLevelData,1,function(x) mean(x)>10)
 table(filter)
-common <- intersect(names(yeastGC),rownames(geneLevelData[filter,])) 
+common <- intersect(names(yeastGC),
+                    rownames(geneLevelData[filter,])) 
 length(common)
 @ 
 
 This leaves us with \Sexpr{length(common)} genes.
 
-The \Rpackage{EDASeq} package provides the \Rclass{SeqExpressionSet}
+The \Biocpkg{EDASeq} package provides the \Rclass{SeqExpressionSet}
 class to store gene counts, (lane-level) information on the sequenced
 libraries, and (gene-level) feature information.  We use the data
 frame \Robject{met} created in Section \ref{secRead} for the
@@ -295,7 +252,7 @@ GC-content.
 
 <<create-object>>=
 feature <- data.frame(gc=yeastGC,length=yeastLength)
-data <- newSeqExpressionSet(exprs=as.matrix(geneLevelData[common,]),
+data <- newSeqExpressionSet(counts=as.matrix(geneLevelData[common,]),
                             featureData=feature[common,],
                             phenoData=data.frame(
                               conditions=c(rep("mut",2),rep("wt",2)),
@@ -303,25 +260,25 @@ data <- newSeqExpressionSet(exprs=as.matrix(geneLevelData[common,]),
 data
 @ 
 
-Note that the row names of \Robject{exprs} and \Robject{featureData}
-must be the same; likewise for the row names of \Robject{phenoData}
-and the column names of \Robject{exprs}.  As in the
-\Rclass{ExpressionSet} class, the expression values can be accessed
-with \Rfunction{exprs}, the lane information with \Rfunction{pData},
+Note that the row names of \Rcode{counts} and \Rcode{featureData}
+must be the same; likewise for the row names of \Rcode{phenoData}
+and the column names of \Rcode{counts}.  As in the
+\Rclass{CountDataSet} class, the expression values can be accessed
+with \Rfunction{counts}, the lane information with \Rfunction{pData},
 and the feature information with \Rfunction{fData}.
 
 <<show-data>>=
-head(exprs(data))
+head(counts(data))
 pData(data)
 head(fData(data))
 @ 
 
-The \Rclass{SeqExpressionSet} class has an additional slot called
-\Robject{offset} (matrix of the same dimension as \Robject{exprs}),
-which may be used to store a normalization offset to be supplied to a
-model for read counts in differential expression analysis (see Section
-\ref{secDE} and the vignette for \Rpackage{edgeR} for details on the
-role offsets). If not specified, the offset is initialized as a matrix
+The \Rclass{SeqExpressionSet} class has two additional slots:
+\Rcode{normalizedCounts} and \Robject{offset} (matrices of the same dimension as \Rcode{counts}),
+which may be used to store a matrix of normalized counts and of
+normalization offsets, respectively, to be used for subsequent analyses (see Section
+\ref{secDE} and the \Biocpkg{edgeR} vignette for details on the
+role of offsets). If not specified, the offset is initialized as a matrix
 of zeros.
 
 <<show-offset>>=
@@ -332,37 +289,21 @@ head(offst(data))
 
 One of the main considerations when dealing with gene-level counts is
 the difference in count distributions between lanes. The
-\Rmethod{boxplot} method provides an easy way to produce boxplots of
-the logarithms of the gene counts in each lane (Figure \ref{fig8}).
+\Rfunction{boxplot} method provides an easy way to produce boxplots of
+the logarithms of the gene counts in each lane (Figure \ref{fig:boxplot-genelevel}).
 
-<<boxplot-genelevel,fig=TRUE,include=FALSE>>=
+<<boxplot-genelevel, fig.cap="Between-lane distribution of gene-level counts (log).">>=
 boxplot(data,col=colors[1:4])
 @ 
 
-The \Rmethod{MDPlot} method produces a mean-difference plot (MD-plot)
-of read counts for two lanes (Figure \ref{fig8b}).
+The \Rfunction{MDPlot} method produces a mean-difference plot (MD-plot)
+of read counts for two lanes (Figure \ref{fig:md-plot}).
 
-<<md-plot,fig=TRUE,include=FALSE>>=
+<<md-plot, fig.cap="Mean-difference plot of the gene-level counts (log) of lanes 'mut\\_1' and 'wt\\_1.'">>=
 MDPlot(data,c(1,3))
 @ 
 
 \paragraph{Over-dispersion.}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=.45\textwidth]{EDASeq-boxplot-genelevel}
-  \caption{Between-lane distribution of gene-level counts (log).}
-  \label{fig8}   
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=.45\textwidth]{EDASeq-md-plot}
-  \caption{Mean-difference plot of the gene-level counts (log) of
-    lanes ``mut\_1'' and ``wt\_1''.}
-  \label{fig8b}   
-\end{figure}
-
 
 Although the Poisson distribution is a natural and simple way to model
 count data, it has the limitation of assuming equality of the mean and
@@ -370,42 +311,23 @@ variance. For this reason, the negative binomial distribution has been
 proposed as an alternative when the data show over-dispersion. The
 function \Rfunction{meanVarPlot} can be used to check whether the
 count data are over-dispersed (for the Poisson distribution, one would
-expect the points in Figures \ref{fig9a} and \ref{fig9b} to be evenly
+expect the points in Figures \ref{fig:plot-mean-var} to be evenly
 scattered around the black line).
 
-<<plot-mean-var-mut,fig=TRUE,include=FALSE>>=
-meanVarPlot(data[,1:2],log=T, ylim=c(0,16))
-@ 
-
-<<plot-mean-var-all,fig=TRUE,include=FALSE>>=
-meanVarPlot(data,log=T, ylim=c(0,16))
+<<plot-mean-var, fig.cap="Mean-variance relationship for the two mutant lanes and all four lanes: the black line corresponds to the Poisson distribution (variance equal to the mean), while the red curve is a lowess fit.", fig.subcap=c("Mutant lanes", "All four lanes"), out.width='.49\\linewidth'>>=
+meanVarPlot(data[,1:2], log=TRUE, ylim=c(0,16))
+meanVarPlot(data, log=TRUE, ylim=c(0,16))
 @ 
 
 Note that the mean-variance relationship should be examined within
 replicate lanes only (i.e., conditional on variables expected to
 contribute to differential expression). For the yeast dataset, it is
 not surprising to see no evidence of over-dispersion for the two
-mutant technical replicate lanes (Figure \ref{fig9a}); likewise for
+mutant technical replicate lanes (Figure \ref{fig:plot-mean-var}a); likewise for
 the two wild-type lanes. However, one expects over-dispersion in the
-presence of biological variability, as seen in Figure \ref{fig9b} when
-considering at once all four mutant and wild-type lanes
+presence of biological variability, as seen in Figure
+\ref{fig:plot-mean-var}b when considering at once all four mutant and wild-type lanes
 \citep{anders2010differential,bullard2010evaluation,robinson2010edger}.
-
-
-\begin{figure}
-  \centering
-  \subfigure[Mutant lanes]{
-    \includegraphics[width=.45\textwidth]{EDASeq-plot-mean-var-mut}
-    \label{fig9a}
-  }
-  \subfigure[All four lanes]{
-    \includegraphics[width=.45\textwidth]{EDASeq-plot-mean-var-all}
-    \label{fig9b}
-  }
-  \caption{Mean-variance relationship for the two mutant lanes and all
-    four lanes: the black line corresponds to the Poisson distribution
-    (variance equal to the mean), while the red curve is a lowess fit.}
-\end{figure}
 
 
 \paragraph{Gene-specific effects on read counts.}
@@ -414,41 +336,24 @@ Several authors have reported selection biases related to sequence
 features such as gene length, GC-content, and mappability
 \citep{bullard2010evaluation,hansen2011removing,oshlack2009transcript,risso2011gc}.
 
-In Figure \ref{fig10}, obtained using \Rfunction{biasPlot}, one can
+In Figure \ref{fig:plot-gc}, obtained using \Rfunction{biasPlot}, one can
 see the dependence of gene-level counts on GC-content. The same plot
 could be created for gene length or mappability instead of GC-content.
 
-<<plot-gc,fig=TRUE,include=FALSE>>=
-biasPlot(data,"gc",log=T,ylim=c(1,5))
+<<plot-gc, fig.cap="Lowess regression of the gene-level counts (log) on GC-content for each lane, color-coded by experimental condition.">>=
+biasPlot(data, "gc", log=TRUE, ylim=c(1,5))
 @ 
-
-\begin{figure}
-  \centering
-  \includegraphics[width=.55\textwidth]{EDASeq-plot-gc}
-  \caption{Lowess regression of the gene-level counts (log) on 
-    GC-content for each lane, color-coded by experimental condition.}
-  \label{fig10}   
-\end{figure}
 
 To show that GC-content dependence can bias differential expression
 analysis, one can produce stratified boxplots of the log-fold-change
-of read counts from two lanes using the \Rmethod{biasBoxplot} method
-(Figure \ref{fig10b}). Again, the same type of plots can be created
+of read counts from two lanes using the \Rfunction{biasBoxplot} method
+(Figure \ref{fig:boxplot-gc}). Again, the same type of plots can be created
 for gene length or mappability.
 
-<<boxplot-gc,fig=TRUE,include=FALSE>>=
-lfc <- log(exprs(data)[,3]+0.5)-log(exprs(data)[,1]+0.5)
-biasBoxplot(lfc,fData(data)$gc)
+<<boxplot-gc, fig.cap="Boxplots of the log-fold-change between 'mut\\_1' and 'wt\\_1' lanes stratified by GC-content.">>=
+lfc <- log(counts(data)[,3]+0.1) - log(counts(data)[,1]+0.1)
+biasBoxplot(lfc, fData(data)$gc)
 @ 
-
-
-\begin{figure}
-  \centering
-  \includegraphics[width=.55\textwidth]{EDASeq-boxplot-gc}
-  \caption{Boxplots of the log-fold-change between ``mut\_1'' and
-    ``wt\_1'' lanes stratified by GC-content.}
-  \label{fig10b}   
-\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Normalization}
@@ -473,8 +378,8 @@ of these methods in context of GC-content normalization see
 \citet{risso2011gc}.
 
 <<normalization>>=
-dataWithin <- withinLaneNormalization(data,"gc",which="full")
-dataNorm <- betweenLaneNormalization(dataWithin,which="full")
+dataWithin <- withinLaneNormalization(data,"gc", which="full")
+dataNorm <- betweenLaneNormalization(dataWithin, which="full")
 @ 
 
 Regarding between-lane normalization, the package implements three of
@@ -483,31 +388,14 @@ global-scaling using the median (\Rcode{median}), global-scaling using
 the upper-quartile (\Rcode{upper}), and full-quantile normalization
 (\Rcode{full}).
 
-Figure \ref{fig11} shows how after full-quantile within- and
+Figure \ref{fig:plot-gc-norm} shows how after full-quantile within- and
 between-lane normalization, the GC-content bias is reduced and the
 distribution of the counts is the same in each lane.
 
-<<plot-gc-norm,fig=TRUE,include=FALSE>>=
-biasPlot(dataNorm,"gc",log=T,ylim=c(1,5))
+<<plot-gc-norm, fig.cap="Full-quantile within- and between-lane normalization. (a) Lowess regression of normalized gene-level counts (log) on GC-content for each lane. (b) Between-lane distribution of normalized gene-level counts (log).", fig.subcap=c("GC-content", "Count distribution"), out.width='.49\\linewidth'>>=
+biasPlot(dataNorm, "gc", log=TRUE, ylim=c(1,5))
+boxplot(dataNorm, col=colors)
 @ 
-
-<<boxplot-norm,fig=TRUE,include=FALSE>>=
-boxplot(dataNorm,col=colors)
-@ 
-
-\begin{figure}
-  \centering
-  \subfigure[GC-content]{
-    \includegraphics[width=.45\textwidth]{EDASeq-plot-gc-norm}
- }
-  \subfigure[Count distribution]{
-    \includegraphics[width=.45\textwidth]{EDASeq-boxplot-norm}
- }
-  \caption{Full-quantile within- and between-lane
-normalization. (a) Lowess regression of normalized gene-level counts
-(log) on GC-content for each lane. (b) Between-lane distribution of normalized gene-level counts (log).}
-  \label{fig11}
-\end{figure}
 
 \paragraph{Offset.}
 \label{secDE}
@@ -527,16 +415,19 @@ dataOffset <- betweenLaneNormalization(dataOffset,
                                        which="full",offset=TRUE)
 @ 
 
+Note that the \Robject{dataOffset} object will have both normalized
+counts and offset stored in their respective slots.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Differential expression analysis}
 
 One of the main applications of RNA-Seq is differential expression
 analysis.  The normalized counts (or the original counts and the
-offset) obtained using the \Rpackage{EDASeq} package can be supplied
-to packages such as \Rpackage{edgeR} \citep{robinson2010edger} or
-\Rpackage{DESeq} \citep{anders2010differential} to find differentially
+offset) obtained using the \Biocpkg{EDASeq} package can be supplied
+to packages such as \Biocpkg{edgeR} \citep{robinson2010edger} or
+\Biocpkg{DESeq} \citep{anders2010differential} to find differentially
 expressed genes. This section should be considered only as an
-illustration of the compatibility of the results of \Rpackage{EDASeq}
+illustration of the compatibility of the results of \Biocpkg{EDASeq}
 with two of the most widely used packages for differential expression;
 our aim is not to compare differential expression strategies (e.g.,
 normalized counts vs. offset).
@@ -544,19 +435,19 @@ normalized counts vs. offset).
 \subsection{edgeR}\label{edger}
 
 We can perform a differential expression analysis with
-\Rpackage{edgeR} based on the original counts by passing an offset to
+\Biocpkg{edgeR} based on the original counts by passing an offset to
 the generalized linear model. For simplicity, we estimate a common dispersion
-parameter for all genes. See the \Rpackage{edgeR} vignette for details
+parameter for all genes. See the \Biocpkg{edgeR} vignette for details
 about how to perform a differential expression analysis using a
 gene-specific dispersion or more complex designs.
 
 <<edger>>=
 library(edgeR)
 design <- model.matrix(~conditions, data=pData(dataOffset))
-disp <- estimateGLMCommonDisp(exprs(dataOffset), 
+disp <- estimateGLMCommonDisp(counts(dataOffset), 
                               design, offset=-offst(dataOffset))
 
-fit <- glmFit(exprs(dataOffset), design, disp, offset=-offst(dataOffset))
+fit <- glmFit(counts(dataOffset), design, disp, offset=-offst(dataOffset))
 
 lrt <- glmLRT(fit, coef=2)
 topTags(lrt)
@@ -565,9 +456,9 @@ topTags(lrt)
 \subsection{DESeq}
 
 We can perform a differential expression analysis with
-\Rpackage{DESeq} based on the normalized counts by using the coerce
+\Biocpkg{DESeq} based on the normalized counts by using the coerce
 method from the \Rclass{SeqExpressionSet} class to the
-\Rclass{CountDataSet} class of \Rpackage{DESeq}.  When working with
+\Rclass{CountDataSet} class of \Biocpkg{DESeq}.  When working with
 data that have been normalized for both within- and between-lane
 effects, we force the size factors to be one, since differences in
 lane sequencing depths have already been accounted for in our
@@ -577,10 +468,10 @@ estimating the size factors using \Rpackage{DESeq}.
 
 <<deseq>>=
 library(DESeq)
-counts <- as(dataNorm,"CountDataSet")
+counts <- as(dataNorm, "CountDataSet")
 sizeFactors(counts) <- rep(1,4)
 counts <- estimateDispersions(counts)
-res <- nbinomTest(counts, "wt", "mut" )
+res <- nbinomTest(counts, "wt", "mut")
 head(res)
 @ 
 
@@ -621,11 +512,10 @@ One can easily recover the normalized data from the raw counts and
 offset, as shown here:
 
 <<unrounded>>=
-dataNorm <- betweenLaneNormalization(data, round=FALSE)
-dataOffset <- betweenLaneNormalization(data, offset=TRUE)
+dataNorm <- betweenLaneNormalization(data, round=FALSE, offset=TRUE)
 
-norm1 <- exprs(dataNorm)
-norm2 <- exp(log(exprs(dataOffset) + 0.1 ) + offst(dataOffset)) - 0.1
+norm1 <- normCounts(dataNorm)
+norm2 <- exp(log(counts(dataNorm) + 0.1 ) + offst(dataNorm)) - 0.1
 
 head(norm1 - norm2)
 @ 
@@ -634,19 +524,19 @@ Note that the small constant added in the definition of offset does
 not matter when pseudo-counts are considered, i.e.,
 
 <<rounded>>= 
-head(round(exprs(dataNorm)) - round(exprs(dataOffset) * exp(offst(dataOffset))))
+head(round(normCounts(dataNorm)) - round(counts(dataNorm) * exp(offst(dataNorm))))
 @ 
 
 We defined the offset as the log-ratio between normalized and raw
-counts. However, the \Rpackage{edgeR} functions expect as offset
+counts. However, the \Biocpkg{edgeR} functions expect as offset
 argument the log-ratio between raw and normalized counts. One must use
-\texttt{-offst(offsetData)} as the offset argument of \Rpackage{edgeR}
+\texttt{-offst(offsetData)} as the offset argument of \Biocpkg{edgeR}
 (see Section \ref{edger}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{SessionInfo}
 
-<<sessionInfo, results=tex, print=TRUE>>=
+<<sessionInfo, results="asis">>=
 toLatex(sessionInfo())
 @ 
 

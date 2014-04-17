@@ -36,15 +36,19 @@ library(yeastRNASeq)
 data(geneLevelData)
 data(yeastGC)
 
-sub <- intersect(rownames(geneLevelData),names(yeastGC))
+sub <- intersect(rownames(geneLevelData), names(yeastGC))
 
 mat <- as.matrix(geneLevelData[sub,])
 
-data <- newSeqExpressionSet(mat,phenoData=AnnotatedDataFrame(data.frame(conditions=factor(c("mut","mut","wt","wt")),row.names=colnames(geneLevelData))),featureData=AnnotatedDataFrame(data.frame(gc=yeastGC[sub])))
+data <- newSeqExpressionSet(mat,
+                            phenoData=AnnotatedDataFrame(
+                                      data.frame(conditions=factor(c("mut", "mut", "wt", "wt")),
+                                                 row.names=colnames(geneLevelData))),
+                            featureData=AnnotatedDataFrame(data.frame(gc=yeastGC[sub])))
 
-lfc <- log(geneLevelData[sub,3]+1) - log(geneLevelData[sub,1]+1)
+lfc <- log(geneLevelData[sub, 3] + 1) - log(geneLevelData[sub, 1] + 1)
 
-biasBoxplot(lfc,yeastGC[sub],las=2,cex.axis=.7)
+biasBoxplot(lfc, yeastGC[sub], las=2, cex.axis=.7)
 
 }
 
