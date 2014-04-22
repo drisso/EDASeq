@@ -65,6 +65,7 @@ two replicates of one of the mutant strains (``mut'').  We use
 these data to illustrate gene-level EDA.
 
 <<setup, echo=FALSE>>=
+library(knitr)
 opts_chunk$set(dev="pdf", fig.align="center", cache=FALSE, message=FALSE, out.width=".55\\textwidth", echo=TRUE, results="markup", fig.show="hold")
 options(width=60)
 @
