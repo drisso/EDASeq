@@ -1,5 +1,11 @@
-Changes in Version 1.99 (Major update)
+Changes in Version 2.1
 ----------------------
+
+* Fixed bug in plotPCA
+
+Changes in Version 2.0 (Major update)
+----------------------
+
 * "exprs" and "exprs<-" are now deprecated: use "counts" and "counts<-" instead (for compatibility with the DESeq class).
 * "counts" now accesses the original counts (even after normalization) and "normCounts" accesses the normalized counts.
 * Added the slot "normalizedCounts" to the SeqExpressionSet class: now the normalization functions will save the normalized counts in this new slot while keeping the original counts in "counts."
@@ -11,10 +17,12 @@ Changes in Version 1.99 (Major update)
 
 Changes in Version 1.9
 -----------------------
+
 * Added method plotRLE for Relative Log Expression (RLE) plots.
 
 Changes in Version 1.3
 ------------------------
+
 * Fixed a bug in biasPlot relative to the lwd, xlab and ylab arguments.
 * Added a color_code option and changed the behavior of col in biasPlot.
 * Updated CITATION file.
@@ -23,21 +31,25 @@ Changes in Version 1.3
 
 Changes in Version 1.2
 ------------------------
+
 * Fixed a bug in methods plotQuality and plotNtFrequency that now allow the strand information to be missing in the SAM/BAM file.
 * Fixed a bug in method biasPlot. It doesn't require anymore that one of the column of pData is called "conditions".
 * biasPlot method of SeqExpressionSet has now the argument "col" to specify the column of pData to use for color coding.
 
 Changes in Version 0.99.1
 ------------------------
+
 * The read-level EDA is now based on the classes BamFileList and FastqFileList of Rsamtools. The class ShortReadSet doesn't exist anymore.
 * Changed vignette
 
 Changes in Version 0.99.0
 ------------------------
+
 * Version number changed for submission to Bioconductor
 
 Changes in Version 0.0.6
 ------------------------
+
 * Fixed a bug in withinLaneNormalization to work with unnamed matrices
 * Fixed a bug in biasPlot to work with a single lane experiment
 * Added methods MDPlot and biasBoxplot
@@ -45,16 +57,19 @@ Changes in Version 0.0.6
 
 Changes in Version 0.0.5
 ------------------------
+
 * Modified coerce from SeqExpressionSet to CountDataSet to treat the two class comparison in a separate way
 
 Changes in Version 0.0.4
 ------------------------
+
 * Added Vignette
 * Adjusted xlab in the boxplot method for signature FastqQuality
 * Changed getOffset and setOffset<- methods in offst and offst<- for compatibility with edgeR
 
 Changes in Version 0.0.3
 ------------------------
+
 * Added CITATION file
 * Added Help pages
 * Added data and extdata for the examples

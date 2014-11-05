@@ -486,7 +486,7 @@ setMethod(
               } else {
                 counts <- normCounts(x)
               }
-              plotPCA(counts, ...)
+              plotPCA(counts, k=k, ...)
             }
           }
           )
