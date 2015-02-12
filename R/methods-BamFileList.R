@@ -21,10 +21,10 @@ setMethod(
               fq <- bam[[1]]$qual
               wd <- unique(width(fq))
               if (1L != length(wd)) {
-                minwd <- min(wd)
-                message("reducing width to trailing ", minwd,
-                        "\n  path: ", x)
-                fq <- narrow(fq, end(fq) - minwd + 1L, end(fq))
+                  minwd <- min(wd)
+                  message(paste("reducing width to trailing ", minwd,
+                                "\n  path: ", path(x)))
+                  fq <- narrow(fq, start=1, end=minwd)
               }
               quality <- as(fq[strand=="+" | is.na(strand)], "matrix")
               quality <- rbind(quality,as(fq[strand=="-" & !is.na(strand)], "matrix")[,NCOL(quality):1])
@@ -75,10 +75,10 @@ setMethod(
             wd <- unique(width(fq))
             if (1L != length(wd)) {
               minwd <- min(wd)
-              message("reducing width to trailing ", minwd,
-                      "\n  path: ", x)
-              fq <- narrow(fq, end(fq) - minwd + 1L, end(fq))
-            }
+              message(paste("reducing width to trailing ", minwd,
+                      "\n  path: ", path(x)))
+              fq <- narrow(fq, start=1, end=minwd)
+          }
             quality <- as(fq[strand=="+" | is.na(strand)], "matrix")
             quality <- rbind(quality,as(fq[strand=="-" & !is.na(strand)], "matrix")[,NCOL(quality):1])
             boxplot(quality,...)

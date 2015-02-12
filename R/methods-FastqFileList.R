@@ -7,10 +7,10 @@ setMethod(
               fq <- quality(readFastq(x))
               wd <- unique(width(fq))
               if (1L != length(wd)) {
-                minwd <- min(wd)
-                message("reducing width to trailing ", minwd,
-                        "\n  path: ", x)
-                fq <- narrow(fq, end(fq) - minwd + 1L, end(fq))
+              minwd <- min(wd)
+              message(paste("reducing width to trailing ", minwd,
+                      "\n  path: ", path(x)))
+              fq <- narrow(fq, start=1, end=minwd)
               }
               colMeans(as(fq, "matrix"))
             })

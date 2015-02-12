@@ -1,7 +1,8 @@
 Changes in Version 2.1
 ----------------------
 
-* Fixed bug in plotPCA
+* Fixed bug in plotPCA: parameter k was not passed properly in SeqExpressionSet method.
+* Fixed bug in plotQuality: trimming when reads of different lengths in same BAM/FASTQ files.
 
 Changes in Version 2.0 (Major update)
 ----------------------
