@@ -6,17 +6,20 @@
 \alias{plotPCA,SeqExpressionSet-method}
 \title{  Methods for Function \code{plotPCA} in Package \pkg{EDASeq} }
 \description{
-\code{plotPCA} produces a Principal Component Analysis (PCA) plot of the counts in \code{x}
+\code{plotPCA} produces a Principal Component Analysis (PCA) plot of the counts in \code{object}
 }
 
 \usage{
-plotPCA(x, k=2, ...)
+\S4method{plotPCA}{matrix}(object, k=2, labels=TRUE, ...)
+\S4method{plotPCA}{SeqExpressionSet}(object, k=2, labels=TRUE, ...)
 }
 
 \arguments{
-\item{x}{Either a numeric matrix or a \code{\linkS4class{SeqExpressionSet}} object containing the gene expression.}
+\item{object}{Either a numeric matrix or a \code{\linkS4class{SeqExpressionSet}} object containing the gene expression.}
 
 \item{k}{The number of principal components to be plotted.}
+
+\item{labels}{Logical. If \code{TRUE}, and \code{k=2}, it plots the \code{colnames} of \code{object} as point labels.}
 
 \item{...}{See \code{\link{par}}}
 }

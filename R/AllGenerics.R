@@ -62,8 +62,3 @@ setGeneric(
            name = "normCounts<-",
            def = function(object, value) {standardGeneric("normCounts<-")}
            )
-
-setGeneric(
-           name = "plotPCA",
-           def = function(x, k=2, ...) {standardGeneric("plotPCA")}
-           )

@@ -452,41 +452,51 @@ setMethod(
 
 
 setMethod(
-          f = "plotPCA",
-          signature = signature(x="matrix"),
-          definition = function(x, k=2, ...) {
-              Y <- apply(log(x+1), 1, function(y) scale(y, center=TRUE, scale=FALSE))
-              s <- svd(Y)
-
-              if(k>ncol(x)) {
-                stop("The number of PCs must be less than the number of samples.")
-              }
-              
-              if(k<2) {
-                stop("The number of PCs must be at least 2.")
-              } else if (k==2) {
-                plot(s$u[,1], s$u[,2], type='n', ..., xlab="PC1", ylab="PC2")
-                text(s$u[,1], s$u[,2], labels=colnames(x), ...)
-              } else {
-                colnames(s$u) <- paste("PC", 1:ncol(s$u), sep="")
-                pairs(s$u[,1:k], ...)
-              }
+    f = "plotPCA",
+    signature = signature(object="matrix"),
+    definition = function(object, k=2, labels=TRUE, ...) {
+        Y <- apply(log(object+1), 1, function(y) scale(y, center=TRUE, scale=FALSE))
+        s <- svd(Y)
+        percent <- s$d/sum(s$d)*100
+        labs <- sapply(seq_along(percent), function(i) {
+            paste("PC ", i, " (", round(percent[i], 2), "%)", sep="")
+        })
+        
+        if(k>ncol(object)) {
+            stop("The number of PCs must be less than the number of samples.")
+        }
+        
+        if(k<2) {
+            stop("The number of PCs must be at least 2.")
+        } else if (k==2) {
+            if(labels) {
+                plot(s$u[,1], s$u[,2], type='n', ...,
+                     xlab=labs[1], ylab=labs[2])
+                text(s$u[,1], s$u[,2], labels=colnames(object), ...)
+            } else {
+                plot(s$u[,1], s$u[,2], ...,
+                     xlab=labs[1], ylab=labs[2])
             }
-          )
+        } else {
+            colnames(s$u) <- labs
+            pairs(s$u[,1:k], ...)
+        }
+    }
+)
 
 setMethod(
           f = "plotPCA",
-          signature = signature(x="SeqExpressionSet"),
-          definition = function(x, k=2, ...) {
-            if(ncol(counts(x))<=1) {
+          signature = signature(object="SeqExpressionSet"),
+          definition = function(object, k=2, labels=TRUE, ...) {
+            if(ncol(counts(object))<=1) {
               stop("At least two samples needed for the PCA plot.")
             } else {
-              if(all(is.na(normCounts(x)))) {
-                counts <- counts(x)
+              if(all(is.na(normCounts(object)))) {
+                counts <- counts(object)
               } else {
-                counts <- normCounts(x)
+                counts <- normCounts(object)
               }
-              plotPCA(counts, k=k, ...)
+              plotPCA(counts, k=k, labels=labels, ...)
             }
           }
           )
