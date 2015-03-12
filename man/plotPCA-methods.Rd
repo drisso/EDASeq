@@ -10,7 +10,7 @@
 }
 
 \usage{
-\S4method{plotPCA}{matrix}(object, k=2, labels=TRUE, ...)
+\S4method{plotPCA}{matrix}(object, k=2, labels=TRUE, isLog=FALSE, ...)
 \S4method{plotPCA}{SeqExpressionSet}(object, k=2, labels=TRUE, ...)
 }
 
@@ -20,6 +20,8 @@
 \item{k}{The number of principal components to be plotted.}
 
 \item{labels}{Logical. If \code{TRUE}, and \code{k=2}, it plots the \code{colnames} of \code{object} as point labels.}
+
+\item{isLog}{Logical. Set to \code{TRUE} if the data are already on the log scale.}
 
 \item{...}{See \code{\link{par}}}
 }

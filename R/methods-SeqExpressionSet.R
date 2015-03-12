@@ -454,8 +454,12 @@ setMethod(
 setMethod(
     f = "plotPCA",
     signature = signature(object="matrix"),
-    definition = function(object, k=2, labels=TRUE, ...) {
-        Y <- apply(log(object+1), 1, function(y) scale(y, center=TRUE, scale=FALSE))
+    definition = function(object, k=2, labels=TRUE, isLog=FALSE, ...) {
+        if(!isLog) {
+            Y <- apply(log(object+1), 1, function(y) scale(y, center=TRUE, scale=FALSE))
+        } else {
+            Y <- apply(object, 1, function(y) scale(y, center=TRUE, scale=FALSE))
+        }
         s <- svd(Y)
         percent <- s$d/sum(s$d)*100
         labs <- sapply(seq_along(percent), function(i) {
@@ -496,7 +500,7 @@ setMethod(
               } else {
                 counts <- normCounts(object)
               }
-              plotPCA(counts, k=k, labels=labels, ...)
+              plotPCA(counts, k=k, labels=labels, isLog=FALSE, ...)
             }
           }
           )
