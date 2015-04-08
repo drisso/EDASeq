@@ -461,7 +461,7 @@ setMethod(
             Y <- apply(object, 1, function(y) scale(y, center=TRUE, scale=FALSE))
         }
         s <- svd(Y)
-        percent <- s$d/sum(s$d)*100
+        percent <- s$d^2/sum(s$d^2)*100
         labs <- sapply(seq_along(percent), function(i) {
             paste("PC ", i, " (", round(percent[i], 2), "%)", sep="")
         })
