@@ -1,3 +1,9 @@
+Changes in Version 2.3
+----------------------
+
+* Added function getGeneLengthAndGCContent to compute gene length and GC-content.
+* Updated vignette.
+
 Changes in Version 2.1
 ----------------------
 

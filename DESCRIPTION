@@ -1,5 +1,5 @@
 Package: EDASeq
-Version: 2.3.0
+Version: 2.3.1
 Title: Exploratory Data Analysis and Normalization for RNA-Seq
 Description: Numerical and graphical summaries of RNA-Seq read data.
         Within-lane normalization procedures to adjust for GC-content
@@ -9,12 +9,17 @@ Description: Numerical and graphical summaries of RNA-Seq read data.
         procedures to adjust for distributional differences between
         lanes (e.g., sequencing depth): global-scaling and
         full-quantile normalization (Bullard et al., 2010).
-Author: Davide Risso and Sandrine Dudoit
+Authors@R: c(person("Davide", "Risso", email = "risso.davide@gmail.com",
+	          role = c("aut", "cre", "cph")),
+	     person("Sandrine", "Dudoit", role = "aut"),
+	     person("Ludwig", "Geistlinger", role = "ctb"))
+Author: Davide Risso [aut, cre, cph], Sandrine Dudoit [aut], Ludwig Geistlinger [ctb]
 Maintainer: Davide Risso <risso.davide@gmail.com>
 Date: 08-30-2011
 Depends: Biobase (>= 2.15.1), ShortRead (>= 1.11.42)
 Imports: methods, graphics, BiocGenerics, IRanges (>= 1.13.9), DESeq, aroma.light,
-	 Rsamtools (>= 1.5.75)
+	 Rsamtools (>= 1.5.75), biomaRt, Biostrings, AnnotationDbi, GenomicFeatures,
+	 GenomicRanges
 Suggests: BiocStyle, knitr, yeastRNASeq, leeBamViews, edgeR, KernSmooth
 VignetteBuilder: knitr
 License: Artistic-2.0

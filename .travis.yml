@@ -43,7 +43,7 @@ before_install:
 
 install:
   - $RENV install_r KernSmooth
-  - $RENV install_bioc Biobase Rsamtools ShortRead BiocGenerics IRanges DESeq aroma.light BiocStyle knitr yeastRNASeq leeBamViews edgeR
+  - $RENV install_bioc Biobase Rsamtools ShortRead BiocGenerics IRanges DESeq aroma.light BiocStyle knitr yeastRNASeq leeBamViews edgeR biomaRt Biostrings AnnotationDbi GenomicFeatures GenomicRanges
 ## Less overhead when not using 'install_deps'
 ##  - $RENV install_deps
 

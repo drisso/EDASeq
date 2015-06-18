@@ -19,7 +19,7 @@ BiocStyle::latex()
 
 \title{\Biocpkg{EDASeq}: Exploratory Data Analysis and Normalization for RNA-Seq}
 \author{Davide Risso}
-\date{Modified: March 25, 2014.  Compiled: \today}
+\date{Modified: April 25, 2015.  Compiled: \today}
 \begin{document}
 
 \maketitle
@@ -222,7 +222,11 @@ head(geneLevelData)
 Since it is useful to explore biases related to length and GC-content,
 the \Biocpkg{EDASeq} package provides, for illustration purposes,
 length and GC-content for \emph{S. cerevisiae} genes (based on SGD
-annotation, version r64 \citep{sgd}).
+annotation, version r64 \citep{sgd}). 
+%%% ADD LUDWIG
+Functionality for automated retrieval of gene length and GC-content 
+is introduced in the last section of the vignette.
+%%%  
 
 <<load-lgc>>=
 data(yeastGC)
@@ -534,6 +538,29 @@ counts. However, the \Biocpkg{edgeR} functions expect as offset
 argument the log-ratio between raw and normalized counts. One must use
 \texttt{-offst(offsetData)} as the offset argument of \Biocpkg{edgeR}
 (see Section \ref{edger}).
+
+
+%%%%%
+% ADD LUDWIG
+%%%%%
+\section{Retrieving gene length and GC-content}
+Two essential features the gene-level EDA normalizes for are gene length and 
+GC-content. As users might wish to automatically retrieve this information, we 
+provide the function \Rfunction{getGeneLengthAndGCContent}. Given selected 
+ENTREZ or ENSEMBL gene IDs and the organism under investigation, this can be 
+done either based on BioMart (default) or using BioC annotation utilities. 
+
+<<getLengthAndGC>>=
+getGeneLengthAndGCContent(id=c("ENSG00000012048", "ENSG00000139618"), org="hsa")
+@
+
+Accordingly, we can retrieve the precalculated yeast data that has been used 
+throughout the vignette via
+
+<<getLengthAndGC-full, eval=FALSE>>=
+fData(data) <- getGeneLengthAndGCContent(featureNames(data),
+                                              org="sacCer3", mode="org.db")
+@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{SessionInfo}
