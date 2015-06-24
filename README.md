@@ -13,3 +13,7 @@ biocLite("EDASeq")
 * Bioc-release <a href="http://www.bioconductor.org/packages/release/bioc/html/EDASeq.html#archives"><img border="0" src="http://www.bioconductor.org/shields/availability/release/EDASeq.svg" title="Whether the package is available on all platforms; click for details."></a> <a href="http://bioconductor.org/checkResults/release/bioc-LATEST/EDASeq/"><img border="0" src="http://www.bioconductor.org/shields/build/release/bioc/EDASeq.svg" title="build results; click for full report"></a>
 * Bioc-devel: <a href="http://www.bioconductor.org/packages/devel/bioc/html/EDASeq.html#archives"><img border="0" src="http://www.bioconductor.org/shields/availability/devel/EDASeq.svg" title="Whether the package is available on all platforms; click for details."></a> <a href="http://bioconductor.org/checkResults/devel/bioc-LATEST/EDASeq/"><img border="0" src="http://www.bioconductor.org/shields/build/devel/bioc/EDASeq.svg" title="build results; click for full report"></a>
 * Travis CI: [![Build Status](https://travis-ci.org/drisso/EDASeq.svg?branch=devel)](https://travis-ci.org/drisso/EDASeq)
+
+## Issues and bug reports
+
+Please use https://github.com/drisso/EDASeq/issues to submit issues, bug reports, and comments.
