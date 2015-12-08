@@ -85,7 +85,7 @@ getGeneLengthAndGCContent <- function(id, org, mode=c("biomart", "org.db"))
         
         # setting mart
         message("Connecting to BioMart ...")
-        ensembl <- useMart("ensembl")
+        ensembl <- useMart("ENSEMBL_MART_ENSEMBL", host="www.ensembl.org")
         ds <- listDatasets(ensembl)[,"dataset"]
         ds <- grep(paste0("^", org), ds, value=TRUE)
         if(length(ds) == 0) 
@@ -123,9 +123,8 @@ getGeneLengthAndGCContent <- function(id, org, mode=c("biomart", "org.db"))
         
         # (2) get genes and sequences
         sel <- c(id.type, "start_position", "end_position")
-        gene.pos <- getGene(id=id, type=id.type, mart=ensembl)
-        gene.pos <- gene.pos[,sel]
-        
+        gene.pos <- getBM(attributes = sel, filters=id.type, values=id,
+                          mart=ensembl)
         gene.seqs <- getSequence(id=id, 
             type=id.type, seqType="gene_exon_intron", mart=ensembl) 
 
