@@ -430,6 +430,7 @@ setMethod(
 
               boxplot(rle, ...)
               abline(h=0, lty=2)
+              invisible(rle)
           }
           )
 

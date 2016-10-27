@@ -6,6 +6,7 @@ colnames(mat) <- paste("sample", 1:ncol(mat), sep="")
 
 es <- newSeqExpressionSet(mat)
 
+## PCA
 ks <- 2:5
 
 ## matrix
@@ -18,3 +19,14 @@ lapply(ks, function(k) plotPCA(mat, k=k, labels=FALSE, pch=20, col=1:2))
 lapply(ks, function(k) plotPCA(es, k=k))
 lapply(ks, function(k) plotPCA(es, k=k, labels=FALSE))
 lapply(ks, function(k) plotPCA(es, k=k, labels=FALSE, pch=20, col=1:2))
+
+## RLE
+
+## matrix
+rle <- plotRLE(mat)
+stopifnot(all(dim(mat)==dim(rle)))
+
+## expressionset
+rle <- plotRLE(es)
+stopifnot(all(dim(mat)==dim(rle)))
+stopifnot(all(mat==counts(es)))
