@@ -54,7 +54,7 @@ these data to illustrate gene-level EDA.
 
 ```{r setup, echo=FALSE}
 library(knitr)
-opts_chunk$set(dev="pdf", fig.align="center", cache=FALSE, message=FALSE, out.width=".55\\textwidth", echo=TRUE, results="markup", fig.show="hold")
+opts_chunk$set(cache=FALSE, message=FALSE, echo=TRUE, results="markup")
 options(width=60)
 ```
 
@@ -532,7 +532,7 @@ provide the function `getGeneLengthAndGCContent`. Given selected
 ENTREZ or ENSEMBL gene IDs and the organism under investigation, this can be
 done either based on BioMart (default) or using BioC annotation utilities.
 
-```{r getLengthAndGC}
+```{r getLengthAndGC, eval=FALSE}
 getGeneLengthAndGCContent(id=c("ENSG00000012048", "ENSG00000139618"), org="hsa")
 ```
 
