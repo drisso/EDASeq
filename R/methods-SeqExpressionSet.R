@@ -23,7 +23,7 @@ setValidity(
                 }
                 if(!all(is.wholenumber(assayDataElement(object, "counts")), na.rm=TRUE)) {
                   warning("'counts' contains non-integer numbers")
-                } 
+                }
               }
               if (is.null(msg))
                 TRUE
@@ -61,7 +61,7 @@ newSeqExpressionSet <- function(counts,
   if(class(featureData) == "data.frame") {
     featureData <- AnnotatedDataFrame(featureData)
   }
-  
+
   new("SeqExpressionSet",
       assayData = assayDataNew(counts=counts, normalizedCounts=normalizedCounts, offset=offset),
       phenoData = phenoData,
@@ -75,7 +75,7 @@ setMethod(
           signature = "SeqExpressionSet",
           definition = function(object) {
             .Deprecated("counts")
-            
+
             if(all(is.na(normCounts(object)))) {
               counts <- counts(object)
             } else {
@@ -128,7 +128,7 @@ setReplaceMethod(
                  f = "normCounts",
                  signature = "SeqExpressionSet",
                  definition = function(object,value) {
-                   assayDataElement(object, "normCounts") <- as.matrix(value)
+                   assayDataElement(object, "normalizedCounts") <- as.matrix(value)
                    validObject(object)
                    object
                  }
@@ -339,7 +339,7 @@ setMethod(
             } else {
               o <- offst(x)
             }
-            
+
             newSeqExpressionSet(counts=counts(x),
                                 normalizedCounts=withinLaneNormalization(counts(x),
                                   fData(x)[,y], which, offset=FALSE, num.bins, round),
@@ -466,11 +466,11 @@ setMethod(
         labs <- sapply(seq_along(percent), function(i) {
             paste("PC ", i, " (", round(percent[i], 2), "%)", sep="")
         })
-        
+
         if(k>ncol(object)) {
             stop("The number of PCs must be less than the number of samples.")
         }
-        
+
         if(k<2) {
             stop("The number of PCs must be at least 2.")
         } else if (k==2) {
@@ -530,7 +530,7 @@ setMethod(
                 counts <- counts(x)
               } else {
                 counts <- normCounts(x)
-              }             
+              }
               plotRLE(counts, ...)
             }
           }
