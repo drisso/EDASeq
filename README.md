@@ -6,8 +6,8 @@
 This is the developer version of the Bioconductor package [EDASeq](http://www.bioconductor.org/packages/EDASeq). Install in R as:
 
 ```r
-source("http://bioconductor.org/biocLite.R")
-biocLite("EDASeq")
+install.packages("BiocManager")
+BiocManager::install("EDASeq")
 ```
 ## Status
 
