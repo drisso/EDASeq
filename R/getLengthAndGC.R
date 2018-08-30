@@ -177,8 +177,9 @@ getGeneLengthAndGCContent <- function(id, org, mode=c("biomart", "org.db"))
         choice <- readline("Install it now? (y/n): ")
         if(choice == "y")
         {   
-            source("http://bioconductor.org/biocLite.R")
-            biocLite(pkg)
+            if (!requireNamespace("BiocManager", quietly=TRUE))
+                install.packages("BiocManager")
+            BiocManager::install(pkg)
         }   
         else stop(paste("Package", pkg, "is not available"))
     }   
