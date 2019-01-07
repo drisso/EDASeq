@@ -12,7 +12,7 @@ vignette: >
 
 <!--
 %\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{zinbwave Vignette}
+%\VignetteIndexEntry{EDASeq Vignette}
 -->
 
 # Introduction
