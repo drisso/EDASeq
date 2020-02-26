@@ -35,6 +35,7 @@
     if(!any(duplicated(names(y)))){
       y.norm[names(y)]
     }
+    return(y.norm)
     }
   apply(counts,2,f)
 }
