@@ -32,7 +32,9 @@
     names <- unlist(sapply(y.norm,names))
     y.norm <- unlist(y.norm)
     names(y.norm) <- names
-    y.norm[names(y)]
-  }
+    if(!any(duplicated(names(y)))){
+      y.norm[names(y)]
+    }
+    }
   apply(counts,2,f)
 }
