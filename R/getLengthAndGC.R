@@ -111,13 +111,13 @@ getGeneLengthAndGCContent <- function(id, org, mode=c("biomart", "org.db"))
             "chromosome_name", "exon_chrom_start", "exon_chrom_end")
         coords <- getBM(filters=id.type, attributes=attrs, values=id, mart=ensembl)
         id <- unique(coords[,id.type])
-        coords <- GenomicRangesList(sapply(id,
+        coords <- GRangesList(sapply(id,
             function(i)
             {
                 i.coords <- coords[coords[,1]== i, 3:5]
                 g <- GRanges(i.coords[,1], IRanges(i.coords[,2],i.coords[,3]))
                 return(g)
-            }))
+            }), compress=FALSE)
         coords <- reduce(coords)
         len <- sum(width(coords))
 

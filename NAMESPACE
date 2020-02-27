@@ -16,7 +16,7 @@ importMethodsFrom("Biostrings", getSeq, alphabetFrequency)
 importFrom("Biostrings", DNAString)
 importFrom(AnnotationDbi, mapIds)
 importFrom(GenomicFeatures, exonsBy)
-importFrom(GenomicRanges, GRanges, GenomicRangesList)
+importFrom(GenomicRanges, GRanges, GRangesList)
 importMethodsFrom(GenomicRanges, reduce)
 exportClasses(SeqExpressionSet)
 exportMethods(length, width, initialize, barplot, plot, plotQuality, exprs, offst, "offst<-", boxplot,
