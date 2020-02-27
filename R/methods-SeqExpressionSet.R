@@ -18,7 +18,7 @@ setValidity(
               }
               msg <- validMsg(NULL, assayDataValidMembers(assayData(object), c("counts", "normalizedCounts", "offset")))
               if(!is.null(assayDataElement(object, "counts"))) {
-                if(class(assayDataElement(object, "counts"))!="matrix") {
+                if(!is.matrix(assayDataElement(object, "counts"))) {
                   msg <- validMsg(msg, "'counts' must be an integer or numeric matrix")
                 }
                 if(!all(is.wholenumber(assayDataElement(object, "counts")), na.rm=TRUE)) {
@@ -55,10 +55,10 @@ newSeqExpressionSet <- function(counts,
                                 phenoData = annotatedDataFrameFrom(counts, FALSE),
                                 featureData = annotatedDataFrameFrom(counts, TRUE),
                                 ...) {
-  if(class(phenoData) == "data.frame") {
+  if(is.data.frame(phenoData)) {
     phenoData <- AnnotatedDataFrame(phenoData)
   }
-  if(class(featureData) == "data.frame") {
+  if(is.data.frame(featureData)) {
     featureData <- AnnotatedDataFrame(featureData)
   }
 
