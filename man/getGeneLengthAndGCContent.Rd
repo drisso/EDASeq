@@ -59,5 +59,7 @@ Ludwig Geistlinger <Ludwig.Geistlinger@bio.ifi.lmu.de>
 }
 
 \examples{
+\donttest{
 getGeneLengthAndGCContent("ENSG00000012048", "hsa")
+}
 }
