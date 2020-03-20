@@ -246,7 +246,7 @@ feature <- data.frame(gc=yeastGC,length=yeastLength)
 data <- newSeqExpressionSet(counts=as.matrix(geneLevelData[common,]),
                             featureData=feature[common,],
                             phenoData=data.frame(
-                              conditions=c(rep("mut",2),rep("wt",2)),
+                              conditions=factor(c(rep("mut",2),rep("wt",2))),
                               row.names=colnames(geneLevelData)))
 data
 ```
