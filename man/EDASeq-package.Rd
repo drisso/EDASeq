@@ -5,15 +5,13 @@
 \title{Exploratory Data Analysis and Normalization for RNA-Seq data}
 \description{Numerical summaries and graphical representations of some key features of the data along with implementations of both within-lane normalization methods for GC content bias and between-lane normalization methods to adjust for sequencing depth and possibly other differences in distribution.}
 \details{
-The \code{\linkS4class{SeqExpressionSet}} class is used to store gene-level counts along with sample information. It extends the virtual class \code{\linkS4class{eSet}}. See the help page of the class for details. 
+The \code{\linkS4class{SeqExpressionSet}} class is used to store gene-level counts along with sample information. It extends the virtual class \code{\linkS4class{eSet}}. See the help page of the class for details.
 
 "Read-level" information is managed via the \code{\linkS4class{FastqFileList}} and \code{\linkS4class{BamFileList}} classes of \code{\link{Rsamtools}}.
 
 Most used graphic tools for the \code{\linkS4class{FastqFileList}} and \code{\linkS4class{BamFileList}} objects are: 'barplot', 'plotQuality', 'plotNtFrequency'. For \code{\linkS4class{SeqExpressionSet}} objects are: 'biasPlot', 'meanVarPlot', 'MDPlot'.
 
 To perform gene-level normalization use the functions 'withinLaneNormalization' and 'betweenLaneNormalization'.
-
-An 'As' method exists to coerce \code{\linkS4class{SeqExpressionSet}} objects to \code{\linkS4class{CountDataSet}} objects (\code{DESeq} package).
 
 See the package vignette for a typical Exploratory Data Analysis example.
 }

@@ -1,3 +1,9 @@
+Changes in Version 2.23.1
+----------------------
+
+* Removed coercion methods to `CountDataSet` following `DESeq` deprecation.
+* Updated vignette to show how to use `EDASeq` with `DESeq2`.
+
 Changes in Version 2.3
 ----------------------
 

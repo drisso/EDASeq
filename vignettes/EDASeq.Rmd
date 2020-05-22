@@ -253,9 +253,7 @@ data
 
 Note that the row names of `counts` and `featureData`
 must be the same; likewise for the row names of `phenoData`
-and the column names of `counts`.  As in the
-`CountDataSet` class, the expression values can be accessed
-with `counts`, the lane information with `pData`,
+and the column names of `counts`.  The expression values can be accessed with `counts`, the lane information with `pData`,
 and the feature information with `fData`.
 
 ```{r show-data}
@@ -414,54 +412,50 @@ One of the main applications of RNA-Seq is differential expression
 analysis.  The normalized counts (or the original counts and the
 offset) obtained using the `EDASeq` package can be supplied
 to packages such as `edgeR` [@robinson2010edger] or
-`DESeq` [@anders2010differential] to find differentially
+`DESeq2` [@deseq2] to find differentially
 expressed genes. This section should be considered only as an
 illustration of the compatibility of the results of `EDASeq`
 with two of the most widely used packages for differential expression;
-our aim is not to compare differential expression strategies (e.g.,
-normalized counts vs. offset).
+we refer ther reader to the edgeR's user guide and to the DESeq2 vignettes for more details on the methods implemented there.
 
 ## edgeR
 
 We can perform a differential expression analysis with
 `edgeR` based on the original counts by passing an offset to
-the generalized linear model. For simplicity, we estimate a common dispersion
-parameter for all genes. See the `edgeR` vignette for details
-about how to perform a differential expression analysis using a
-gene-specific dispersion or more complex designs.
+the generalized linear model.  See the `edgeR` vignette for details
+about how to perform a differential expression analysis with more complex designs or more robust approaches.
 
 ```{r edger}
 library(edgeR)
 design <- model.matrix(~conditions, data=pData(dataOffset))
-disp <- estimateGLMCommonDisp(counts(dataOffset),
-                              design, offset=-offst(dataOffset))
 
-fit <- glmFit(counts(dataOffset), design, disp, offset=-offst(dataOffset))
+y <- DGEList(counts=counts(dataOffset),
+             group=pData(dataOffset)$conditions)
+y$offset <- -offst(dataOffset)
+y <- estimateDisp(y, design)
 
+fit <- glmFit(y, design)
 lrt <- glmLRT(fit, coef=2)
 topTags(lrt)
 ```
 
-## DESeq
+## DESeq2
 
-We can perform a differential expression analysis with
-`DESeq` based on the normalized counts by using the coerce
-method from the `SeqExpressionSet` class to the
-`CountDataSet` class of `DESeq`.  When working with
-data that have been normalized for both within- and between-lane
-effects, we force the size factors to be one, since differences in
-lane sequencing depths have already been accounted for in our
-between-lane normalization. One could also consider only within-lane
-normalization and account for differences in sequencing depth by
-estimating the size factors using `DESeq`.
+We can perform the same differential expression analysis with
+`DESeq2`.
 
 ```{r deseq}
-library(DESeq)
-counts <- as(dataNorm, "CountDataSet")
-sizeFactors(counts) <- rep(1,4)
-counts <- estimateDispersions(counts)
-res <- nbinomTest(counts, "wt", "mut")
-head(res)
+library(DESeq2)
+dds <- DESeqDataSetFromMatrix(countData = counts(dataOffset),
+                              colData = pData(dataOffset),
+                              design = ~ conditions)
+
+EDASeqNormFactors <- exp(-1 * offst(dataOffset))
+normalizationFactors(dds) <- EDASeqNormFactors
+
+dds <- DESeq(dds)
+res <- results(dds)
+res
 ```
 
 # Definitions and conventions

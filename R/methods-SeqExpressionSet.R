@@ -401,25 +401,6 @@ setMethod(
           }
           )
 
-setAs("SeqExpressionSet",
-      "CountDataSet",
-      function(from) {
-        if(!("conditions" %in% colnames(pData(from)))) {
-          stop("phenoData must contain a column named 'conditions'")
-        }
-        if(all(is.na(normCounts(from)))) {
-          counts <- counts(from)
-        } else {
-          counts <- normCounts(from)
-        }
-        if(NCOL(pData(from))==1 & length(levels(pData(from)$conditions))==2) {
-          newCountDataSet(round(counts),pData(from)[,1])
-        } else {
-          newCountDataSet(round(counts), pData(from), sizeFactors = NULL, featureData = featureData(from))
-        }
-      }
-      )
-
 setMethod(
           f = "plotRLE",
           signature = signature(x="matrix"),

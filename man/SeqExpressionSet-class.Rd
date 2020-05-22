@@ -11,9 +11,8 @@
 \alias{offst,SeqExpressionSet-method}
 \alias{offst<-,SeqExpressionSet,ANY-method}
 \alias{offst<-,SeqExpressionSet-method}
-\alias{coerce,SeqExpressionSet,CountDataSet-method}
 \alias{counts,SeqExpressionSet-method}
-\alias{counts<-,SeqExpressionSet,ANY-method}
+\alias{counts<-,SeqExpressionSet-method}
 \alias{normCounts,SeqExpressionSet-method}
 \alias{normCounts<-,SeqExpressionSet,ANY-method}
 \alias{normCounts<-,SeqExpressionSet-method}
@@ -43,7 +42,7 @@ This class represents a collection of digital expression data (usually counts fr
 
 \section{Slots}{
   Inherited from \code{eSet}:
-  
+
   \describe{
      \item{\code{assayData}}{Contains matrices with equal dimensions, and with
           column number equal to \code{nrow(phenoData)}.\code{assayData} must
@@ -92,8 +91,7 @@ This class represents a collection of digital expression data (usually counts fr
 
     \item{betweenLaneNormalization}{\code{signature(x = "SeqExpressionSet")}: between lane normalization for sequencing depth and possibly other distributional differences between lanes.  See \code{\link{betweenLaneNormalization}} for details.}
 
-    \item{coerce}{\code{signature(from = "SeqExpressionSet", to = "CountDataSet")}: coercion to \code{DESeq} class \code{\linkS4class{CountDataSet}} for compatibility with downstream analysis.}
- }   
+ }
 }
 
 \author{Davide Risso <risso.davide@gmail.com>}
