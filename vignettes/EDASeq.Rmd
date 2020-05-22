@@ -450,8 +450,9 @@ dds <- DESeqDataSetFromMatrix(countData = counts(dataOffset),
                               colData = pData(dataOffset),
                               design = ~ conditions)
 
-EDASeqNormFactors <- exp(-1 * offst(dataOffset))
-normalizationFactors(dds) <- EDASeqNormFactors
+normFactors <- exp(-1 * offst(dataOffset))
+normFactors <- normFactors / exp(rowMeans(log(normFactors)))
+normalizationFactors(dds) <- normFactors
 
 dds <- DESeq(dds)
 res <- results(dds)
