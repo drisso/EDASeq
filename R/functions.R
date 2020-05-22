@@ -2,12 +2,12 @@
   ff <- function(y,x) {
     xx <- x[(y>0)&(y<=quantile(y,probs=0.99))]
     yy <- log(y[(y>0)&(y<=quantile(y,probs=0.99))])
-    
+
     l <- loess(yy~xx)
     y.fit <- predict(l,newdata=x)
     names(y.fit) <- names(y)
     y.fit[is.na(y.fit)] <- 0
-  
+
     retval <- y/exp(y.fit-median(yy))
     return(retval)
   }
@@ -23,6 +23,14 @@
     if(is.null(names(y))) {
       names(y) <- 1:length(y)
     }
+    # take care of duplicate rownames
+    if(any(duplicated(names(y)))){
+      dups <- TRUE
+      originalNames <- names(y)
+      names(y) <- 1:length(y)
+    } else {
+      dups <- FALSE
+    }
     tmp <- tapply(y,bins,function(x) x)
     switch(which,
            full = {y.norm <- normalizeQuantileRank(tmp)},
@@ -32,9 +40,8 @@
     names <- unlist(sapply(y.norm,names))
     y.norm <- unlist(y.norm)
     names(y.norm) <- names
-    if(!any(duplicated(names(y)))){
-      y.norm[names(y)]
-    }
+    y.norm <- y.norm[names(y)]
+    if(dups) names(y.norm) <- originalNames[as.numeric(names(y.norm))]
     return(y.norm)
     }
   apply(counts,2,f)
