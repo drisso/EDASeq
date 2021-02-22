@@ -24,3 +24,15 @@ It plots the nucleotide frequencies per position, averaging all the reads in \co
 }
 \keyword{methods}
 
+\examples{
+if(require(leeBamViews)) {
+  files <- list.files(file.path(system.file(package = "leeBamViews"), "bam"),
+                    pattern = "bam$", full.names = TRUE)
+  names(files) <- gsub("\\.bam", "", basename(files))
+
+  bfs <- BamFileList(files)
+
+  plotNtFrequency(bfs[[1]])
+}
+}
+

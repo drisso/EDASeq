@@ -21,7 +21,7 @@ It produces a boxplot of the per-base distribution of the quality scores of the 
 }
 
 \item{\code{signature(x = "FastqFileList")}}{
-It produces a plot that summarizes the per-base mean quality of the reads of each FASTQ file in \code{x}. 
+It produces a plot that summarizes the per-base mean quality of the reads of each FASTQ file in \code{x}.
 }
 
 }}
@@ -32,5 +32,16 @@ Since FASTQ files can be very long, it can be very expensive to process a whole 
 
 \keyword{methods}
 
+\examples{
+if(require(leeBamViews)) {
+  files <- list.files(file.path(system.file(package = "leeBamViews"), "bam"),
+                    pattern = "bam$", full.names = TRUE)
+  names(files) <- gsub("\\.bam", "", basename(files))
+
+  bfs <- BamFileList(files)
+
+  plotQuality(bfs[[1]],cex.axis=.8)
+}
+}
 
 

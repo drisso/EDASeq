@@ -16,3 +16,17 @@ It takes as additional argument \code{log}, which if true consider the logarithm
 }}
 \keyword{methods}
 
+\examples{
+library(yeastRNASeq)
+data(geneLevelData)
+
+mat <- as.matrix(geneLevelData)
+
+data <- newSeqExpressionSet(mat,
+                            phenoData=AnnotatedDataFrame(
+                                      data.frame(conditions=factor(c("mut", "mut", "wt", "wt")),
+                                                 row.names=colnames(geneLevelData))))
+
+meanVarPlot(data, log=TRUE)
+
+}
