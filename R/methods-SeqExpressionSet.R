@@ -74,14 +74,7 @@ setMethod(
           f = "exprs",
           signature = "SeqExpressionSet",
           definition = function(object) {
-            .Deprecated("counts")
-
-            if(all(is.na(normCounts(object)))) {
-              counts <- counts(object)
-            } else {
-              counts <- normCounts(object)
-            }
-            return(counts)
+            .Defunct("counts")
           }
         )
 
@@ -89,10 +82,7 @@ setReplaceMethod(
                  f = "exprs",
                  signature = "SeqExpressionSet",
                  definition = function(object, value) {
-                   .Deprecated("counts<-")
-                   assayDataElement(object, "counts") <- as.matrix(value)
-                   validObject(object)
-                   object
+                   .Defunct("counts<-")
                  }
                  )
 

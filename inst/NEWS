@@ -1,4 +1,10 @@
-Changes in Version 2.23.1
+Changes in Version 2.26
+----------------------
+
+* "exprs" and "exprs<-" are now defunct: use "counts" and "counts<-" instead.
+
+
+Changes in Version 2.24
 ----------------------
 
 * Removed coercion methods to `CountDataSet` following `DESeq` deprecation.
