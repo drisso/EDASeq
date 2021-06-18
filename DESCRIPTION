@@ -18,9 +18,10 @@ Maintainer: Davide Risso <risso.davide@gmail.com>
 Date: 08-30-2011
 Depends: Biobase (>= 2.15.1), ShortRead (>= 1.11.42)
 Imports: methods, graphics, BiocGenerics, IRanges (>= 1.13.9), aroma.light,
-	 Rsamtools (>= 1.5.75), biomaRt, Biostrings, AnnotationDbi, GenomicFeatures,
-	 GenomicRanges, BiocManager
-Suggests: BiocStyle, knitr, yeastRNASeq, leeBamViews, edgeR, KernSmooth, testthat, DESeq2
+	 Rsamtools (>= 1.5.75), biomaRt, Biostrings, AnnotationDbi,
+	 GenomicFeatures, GenomicRanges, BiocManager
+Suggests: BiocStyle, knitr, yeastRNASeq, leeBamViews, edgeR, KernSmooth,
+          testthat, DESeq2, rmarkdown
 VignetteBuilder: knitr
 License: Artistic-2.0
 LazyLoad: yes
